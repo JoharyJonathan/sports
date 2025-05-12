@@ -1,0 +1,6 @@
+# Java
+.class
+
+# Build output
+target/
+bin/
