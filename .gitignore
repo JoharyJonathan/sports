@@ -1,9 +1,9 @@
 # Java
-.class
+*.class
 
 # Build output
-target/
-bin/
+/target/
+/bin/
 
 # Env
 .env
