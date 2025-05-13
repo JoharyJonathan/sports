@@ -1,11 +1,11 @@
 <template>
     <main>
-        <p class="text-red-500">Home</p>
+        <p>Product Detail</p>
     </main>
 </template>
 
 <script>
     export default {
-        name: "home"
+        name: "product-detail"
     }
 </script>

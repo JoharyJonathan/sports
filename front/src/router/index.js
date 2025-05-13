@@ -6,6 +6,8 @@ import Login from '../views/Login.vue'
 import Signup from '../views/Signup.vue'
 import Admin from '../views/Admin.vue'
 import Profile from '../views/Profile.vue'
+import Cart from '../views/Cart.vue'
+import ProductDetail from '../views/ProductDetail.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -44,6 +46,16 @@ const router = createRouter({
             path: '/profile',
             name: 'profile',
             component: Profile
+        },
+        {
+            path: '/cart/:id',
+            name: 'cart',
+            component: Cart
+        },
+        {
+            path: '/product/:id',
+            name: 'product-detail',
+            component: ProductDetail
         }
     ]
 })
