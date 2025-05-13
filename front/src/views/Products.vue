@@ -245,7 +245,28 @@
 </template>
   
 <script>
+  import axios from 'axios';
+
   export default {
-    name: "Products"
+    name: "Products",
+    data() {
+      return {
+        products: null,
+      };
+    },
+    created() {
+      this.fetchProducts();
+    },
+    methods: {
+      async fetchProducts() {
+        try {
+          const response = await axios.get('http://localhost:8080/api/products');
+          this.products = response.data;
+          console.log(this.products);
+        } catch (error) {
+          console.error('Error fetching products : ', error);
+        }
+      }
+    }
   }
 </script>
