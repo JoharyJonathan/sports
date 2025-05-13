@@ -1,9 +1,8 @@
-<script>
-  import vueLogo from '@/assets/logo.svg'
-  import { RouterView } from 'vue-router';
-
+<script setup>
+  import NavBar from './components/NavBar.vue'
 </script>
 
 <template>
+  <NavBar />
   <RouterView />
 </template>
