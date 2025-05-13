@@ -18,6 +18,9 @@ public class Product {
     @Property("category")
     private String category;
 
+    @Property("description")
+    private String description;
+
     @Property("stock_quantity")
     private Integer stock_quantity;
 
@@ -30,9 +33,10 @@ public class Product {
     public Product() {
     }
 
-    public Product(String name, String category, Integer stock_quantity, Float price, String imageUrl) {
+    public Product(String name, String category, String description, Integer stock_quantity, Float price, String imageUrl) {
         this.name = name;
         this.category = category;
+        this.description = description;
         this.stock_quantity = stock_quantity;
         this.price = price;
         this.imageUrl = imageUrl;
@@ -60,6 +64,14 @@ public class Product {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Integer getStockQuantity() {
@@ -96,6 +108,7 @@ public class Product {
                "id=" + getIdAsString() +
                ", name='" + name + '\'' +
                ", category='" + category + '\'' +
+               ", description=" + description + '\'' +
                ", stock_quantity=" + stock_quantity +
                ", price=" + price +
                ", imageUrl='" + imageUrl + '\'' +
