@@ -57,9 +57,9 @@
         </div>
       </div>
     </nav>
-  </template>
+</template>
   
-  <script>
+<script>
   import { RouterLink } from 'vue-router';
   
   export default {
@@ -68,9 +68,9 @@
       RouterLink
     }
   }
-  </script>
+</script>
   
-  <style>
+<style>
   /* Utilisez des styles CSS standards au lieu de @apply */
   .nav-link {
     color: #f8f9fa;
@@ -85,4 +85,4 @@
   .nav-active span {
     border-bottom: 2px solid #fcd34d;
   }
-  </style>
+</style>
