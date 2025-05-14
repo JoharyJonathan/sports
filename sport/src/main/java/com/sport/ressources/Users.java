@@ -7,6 +7,7 @@ import org.bson.types.ObjectId;
 import com.sport.cache.RedisService;
 import com.sport.models.User;
 import com.sport.persistence.MongoDBConnection;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -23,6 +24,8 @@ public class Users {
 
     @Inject
     private RedisService redisService;
+
+    private final ObjectMapper mapper = new ObjectMapper();
 
     @GET
     public Response getAllUsers() {
@@ -43,7 +46,9 @@ public class Users {
                 return Response.status(Response.Status.NO_CONTENT).build();
             }
 
-            redisService.set(cacheKey, users.toString(), 3600);
+            String json = mapper.writeValueAsString(users);
+
+            redisService.set(cacheKey, json, 3600);
 
             return Response.ok(users).build();
         } catch (Exception e) {
