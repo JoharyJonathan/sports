@@ -133,7 +133,7 @@
         </div>
   
         <!-- Menu latéral -->
-        <div class="fixed left-0 top-0 h-full bg-blue-900 w-16 flex flex-col items-center py-8 hidden lg:flex">
+        <div class="fixed left-0 top-0 h-full bg-blue-900 w-16 flex flex-col items-center py-8 hidden lg:flex mt-15">
           <div class="w-10 h-10 bg-white rounded-full mb-10 flex items-center justify-center text-blue-800 font-bold">S</div>
           <div class="space-y-8">
             <div class="w-10 h-10 bg-blue-700 rounded-lg flex items-center justify-center cursor-pointer">
