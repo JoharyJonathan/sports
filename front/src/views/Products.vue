@@ -62,9 +62,9 @@
               <p v-if="product.description" class="text-blue-200 text-sm mb-3">{{ product.description }}</p>
               <div class="flex justify-between items-center">
                 <p class="text-yellow-400 font-bold text-xl">{{ formatPrice(product.price) }}</p>
-                <button class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 px-4 rounded-lg transition duration-300">
+                <RouterLink :to="`/product/${product.idAsString}`" class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 px-4 rounded-lg transition duration-300">
                   Ajouter
-                </button>
+                </RouterLink>
               </div>
             </div>
           </div>

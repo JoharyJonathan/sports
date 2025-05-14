@@ -5,9 +5,9 @@
         <div class="flex items-center text-sm text-blue-200">
           <a href="#" class="hover:text-white">Accueil</a>
           <span class="mx-2">/</span>
-          <a href="#" class="hover:text-white">Football</a>
+          <a href="#" class="hover:text-white">{{ product.category }}</a>
           <span class="mx-2">/</span>
-          <span class="text-yellow-400">Ballon de football Pro</span>
+          <span class="text-yellow-400">{{ product.name }}</span>
         </div>
       </div>
   
@@ -38,7 +38,7 @@
                 <span class="bg-purple-500 text-white text-xs font-bold px-2 py-1 rounded">BEST-SELLER</span>
               </div>
               
-              <h1 class="text-3xl font-bold mb-2">Ballon de football Pro</h1>
+              <h1 class="text-3xl font-bold mb-2">{{ product.name }}</h1>
               
               <div class="flex items-center gap-2 mb-4">
                 <div class="text-yellow-400 flex">
@@ -48,15 +48,12 @@
               </div>
               
               <div class="mb-6">
-                <span class="text-3xl font-bold text-yellow-400">89,99 €</span>
+                <span class="text-3xl font-bold text-yellow-400">{{ product.price }} €</span>
                 <p class="text-green-400 mt-1">En stock - Livraison sous 24h</p>
               </div>
               
               <p class="text-blue-100 mb-6">
-                Ballon officiel qualité match, conçu pour les performances professionnelles. 
-                Fabriqué avec une technologie avancée qui assure une trajectoire précise, 
-                un toucher exceptionnel et une durabilité supérieure même sur les terrains 
-                les plus exigeants.
+                {{ product.description }}
               </p>
               
               <!-- Color Selection -->
@@ -397,7 +394,31 @@
 </template>
   
 <script>
+  import axios from 'axios';
+
   export default {
-    name: "ProductDetail"
+    name: "ProductDetail",
+    data() {
+      return {
+        product: null,
+      };
+    },
+    created() {
+      this.getProduct();
+    },
+    methods: {
+      async getProduct() {
+        const productId = this.$route.params.id;
+
+        try {
+          const response = await axios.get(`http://localhost:8080/api/products/${productId}`);
+
+          this.product = response.data;
+          console.log(this.product);
+        } catch (error) {
+          console.error('Error Product not found : ', error);
+        }
+      }
+    }
   }
 </script>
