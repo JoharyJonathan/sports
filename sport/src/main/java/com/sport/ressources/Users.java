@@ -157,5 +157,5 @@ public class Users {
         } catch (Exception e) {
             return Response.serverError().entity("Error deleting user: " + e.getMessage()).build();
         }
-    }
+    }    
 }
