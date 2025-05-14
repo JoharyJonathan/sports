@@ -40,6 +40,10 @@
           <RouterLink to="/admin" class="nav-link group" active-class="nav-active">
             <span class="group-hover:border-b-2 group-hover:border-yellow-400 pb-1 px-1 transition duration-200">Admin</span>
           </RouterLink>
+
+          <RouterLink to="/about" class="nav-link group" active-class="nav-active">
+            <span class="group-hover:border-b-2 group-hover:border-yellow-400 pb-1 px-1 transition duration-200">About</span>
+          </RouterLink>
         </div>
   
         <!-- Authentication Buttons -->
