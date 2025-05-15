@@ -183,8 +183,10 @@
 </template>
   
 <script>
+  import axios from 'axios'
+
   export default {
-    name: "Signup",
+    name: 'SignUp',
     data() {
       return {
         firstname: '',
@@ -195,30 +197,47 @@
         favoriteSport: '',
         acceptTerms: false,
         newsletter: false
-      }
+      };
     },
     methods: {
-      handleSignup() {
-        // Vérification que les mots de passe correspondent
+      async handleSignup() {
+        // ⚠️ Validation simple
+        if (!this.firstname || !this.lastname || !this.email || !this.password || !this.confirmPassword || !this.favoriteSport) {
+          alert("Veuillez remplir tous les champs obligatoires.");
+          return;
+        }
+
         if (this.password !== this.confirmPassword) {
-          alert('Les mots de passe ne correspondent pas');
+          alert("Les mots de passe ne correspondent pas.");
           return;
         }
-        
-        // Vérification que les conditions sont acceptées
+
         if (!this.acceptTerms) {
-          alert('Vous devez accepter les conditions générales');
+          alert("Vous devez accepter les conditions générales.");
           return;
         }
-        
-        // Logique d'inscription ici
-        console.log('Création de compte pour:', {
-          nom: this.lastname,
-          prenom: this.firstname,
-          email: this.email,
-          sportFavori: this.favoriteSport,
-          newsletter: this.newsletter
-        });
+
+        try {
+          // 📨 Envoi des données à l'API (adapte l'URL selon ton backend)
+          const response = await axios.post('http://localhost:8080/api/auth/signup', {
+            username: this.firstname + " " + this.lastname,
+            email: this.email,
+            password: this.password,
+            category: this.favoriteSport,
+          },
+          {
+            withCredentials: true
+          });
+
+          console.log('Inscription réussie:', response.data);
+
+          // ✅ Redirection ou confirmation
+          alert("Compte créé avec succès !");
+          this.$router.push('/login'); // redirection vers la page de login
+        } catch (error) {
+          console.error('Erreur lors de l\'inscription:', error.response?.data || error.message);
+          alert("Une erreur s'est produite pendant l'inscription.");
+        }
       }
     }
   }
