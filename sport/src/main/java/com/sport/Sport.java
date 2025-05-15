@@ -2,6 +2,7 @@ package com.sport;
 
 import org.glassfish.jersey.server.ResourceConfig;
 
+import com.fasterxml.jackson.core.util.JacksonFeature;
 import com.sport.filters.CORSFilter;
 import com.sport.ressources.AppBinder;
 
@@ -13,5 +14,6 @@ public class Sport extends ResourceConfig {
         packages("com.sport.ressources");
         register(new AppBinder());
         register(CORSFilter.class);
+        register(JacksonFeature.class);
     }
 }

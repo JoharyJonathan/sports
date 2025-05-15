@@ -70,6 +70,14 @@
     name: "NavBar",
     components: {
       RouterLink
+    },
+    data() {
+      return {
+        user: null,
+      };
+    },
+    created() {
+      console.log(localStorage);
     }
   }
 </script>

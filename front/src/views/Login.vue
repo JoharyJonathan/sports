@@ -17,7 +17,7 @@
         </div>
   
         <!-- Formulaire de connexion -->
-        <form class="space-y-6">
+        <form class="space-y-6" @submit.prevent="handleLogin">
           <div>
             <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
             <input 
@@ -25,6 +25,7 @@
               id="email" 
               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="votre@email.com"
+              v-model="email"
             />
           </div>
           
@@ -34,7 +35,7 @@
               type="password" 
               id="password" 
               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="••••••••"
+              placeholder="••••••••" v-model="password"
             />
           </div>
           
@@ -96,7 +97,8 @@
 </template>
   
 <script>
-import { RouterLink } from 'vue-router';
+  import axios from 'axios';
+  import { jwtDecode } from 'jwt-decode';
 
   export default {
     name: "Login",
@@ -108,9 +110,42 @@ import { RouterLink } from 'vue-router';
       }
     },
     methods: {
-      handleLogin() {
-        // Logique de connexion ici
-        console.log('Tentative de connexion avec:', this.email);
+      async handleLogin() {
+        try {
+          const response = await axios.post('http://localhost:8080/api/auth/login', 
+          {
+            email: this.email,
+            password: this.password,
+          },
+          {
+            withCredentials: true // Important pour les cookies
+          }
+          );
+
+          // Affiche la réponse pour vérification
+          console.log('Réponse de login :', response.data);
+
+          // Utilisation du champ "token" renvoyé par le backend
+          const token = response.data.token;
+
+          // Vérifie que c'est bien une chaîne
+          if (typeof token !== 'string') {
+            throw new Error('Token JWT invalide : "token" doit être une chaîne');
+          }
+
+          // Stocke le token dans localStorage
+          localStorage.setItem('token', token);
+
+          // Décode le token si tu veux en extraire des infos (optionnel)
+          const userInfo = jwtDecode(token);
+          console.log('Utilisateur connecté :', userInfo);
+
+          // Redirection vers la page d'accueil ou dashboard
+          this.$router.push('/');
+        } catch (error) {
+          console.error('Erreur de connexion :', error);
+          this.error = 'Identifiants incorrects ou erreur serveur.';
+        }
       }
     }
   }
