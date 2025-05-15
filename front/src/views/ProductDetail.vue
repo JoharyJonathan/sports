@@ -3,9 +3,9 @@
       <!-- Breadcrumb Navigation -->
       <div class="max-w-7xl mx-auto px-4 py-4">
         <div class="flex items-center text-sm text-blue-200">
-          <a href="#" class="hover:text-white">Accueil</a>
+          <RouterLink to="/" class="hover:text-white">Accueil</RouterLink>
           <span class="mx-2">/</span>
-          <a href="#" class="hover:text-white">{{ product.category }}</a>
+          <RouterLink to="/" class="hover:text-white">{{ product.category }}</RouterLink>
           <span class="mx-2">/</span>
           <span class="text-yellow-400">{{ product.name }}</span>
         </div>
@@ -82,14 +82,14 @@
                 <h3 class="font-semibold mb-2">Quantité:</h3>
                 <div class="flex items-center">
                   <button class="bg-blue-900 px-3 py-1 rounded-l-lg text-xl font-bold">-</button>
-                  <input type="number" value="1" min="1" class="bg-blue-700 border-y border-blue-600 w-16 py-1 text-center" />
+                  <input type="number" v-model="quantity" min="1" class="bg-blue-700 border-y border-blue-600 w-16 py-1 text-center" />
                   <button class="bg-blue-900 px-3 py-1 rounded-r-lg text-xl font-bold">+</button>
                 </div>
               </div>
               
               <!-- Action Buttons -->
               <div class="flex flex-col sm:flex-row gap-4 mb-6">
-                <button class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-3 px-6 rounded-lg flex-1 flex items-center justify-center gap-2 transition duration-300">
+                <button @click="addToCart" class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-3 px-6 rounded-lg flex-1 flex items-center justify-center gap-2 transition duration-300">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                     <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
                   </svg>
@@ -395,12 +395,17 @@
   
 <script>
   import axios from 'axios';
+  import { RouterLink } from 'vue-router';
+  import { jwtDecode } from 'jwt-decode';
 
   export default {
     name: "ProductDetail",
+    props: ['product'],
     data() {
       return {
         product: null,
+        quantity: 1,
+        userId: null,
       };
     },
     created() {
@@ -417,6 +422,52 @@
           console.log(this.product);
         } catch (error) {
           console.error('Error Product not found : ', error);
+        }
+      },
+      async addToCart() {
+        try {
+          const token = localStorage.getItem('token');
+          
+          if (!token) {
+            this.$router.push('/login');
+            throw new Error('Veuillez vous connecter');
+          }
+
+          const decoded = jwtDecode(token);
+          console.log('Token décodé :', decoded);
+          
+          // Vérification de l'expiration du token
+          if (decoded.exp * 1000 < Date.now()) {
+            localStorage.removeItem('token');
+            this.$router.push('/login');
+            throw new Error('Session expirée');
+          }
+
+          this.userId = decoded.sub;
+
+          const payload = {
+            productId: this.product._id,
+            quantity: this.quantity
+          };
+
+          const response = await axios.post(
+            `http://localhost:8080/api/carts/${this.userId}`,
+            payload,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            }
+          );
+
+          alert('Produit ajouté au panier !');
+          console.log('Réponse du panier :', response.data);
+
+          this.$router.push(`/cart/${this.userId}`);
+          
+        } catch (error) {
+          console.error('Erreur panier :', error.response?.data || error.message);
+          alert(error.response?.data?.message || error.message);
         }
       }
     }
