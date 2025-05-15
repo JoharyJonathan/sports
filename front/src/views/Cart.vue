@@ -163,6 +163,14 @@
   
 <script>
   export default {
-    name: "cart"
+    name: "cart",
+    data() {
+      return {
+        cart: null,
+      };
+    },
+    methods: {
+      
+    }
   }
 </script>

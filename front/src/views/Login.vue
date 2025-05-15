@@ -142,6 +142,7 @@
 
           // Redirection vers la page d'accueil ou dashboard
           this.$router.push('/');
+          
         } catch (error) {
           console.error('Erreur de connexion :', error);
           this.error = 'Identifiants incorrects ou erreur serveur.';
