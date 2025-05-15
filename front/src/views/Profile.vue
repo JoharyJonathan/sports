@@ -13,6 +13,24 @@
             <p class="text-blue-200">Athlète • Passionné • Compétiteur</p>
           </div>
         </div>
+
+        <div class="bg-blue-700 bg-opacity-70 rounded-lg shadow-lg p-6 mb-4">
+          <h2 class="text-xl font-bold mb-6 border-b border-blue-600 pb-2">Informations Utilisateur</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            <div class="bg-blue-800 rounded-xl p-4 shadow-md hover:scale-105 transition-transform">
+              <p class="text-sm text-blue-300 mb-1">Nom d'utilisateur</p>
+              <p class="text-lg font-semibold text-white truncate">{{ user?.username }}</p>
+            </div>
+            <div class="bg-blue-800 rounded-xl p-4 shadow-md hover:scale-105 transition-transform">
+              <p class="text-sm text-blue-300 mb-1">Email</p>
+              <p class="text-lg font-semibold text-white truncate">{{ user?.email }}</p>
+            </div>
+            <div class="bg-blue-800 rounded-xl p-4 shadow-md hover:scale-105 transition-transform">
+              <p class="text-sm text-blue-300 mb-1">Catégorie</p>
+              <p class="text-lg font-semibold text-white capitalize">{{ user?.category }}</p>
+            </div>
+          </div>
+        </div>
         
         <!-- Statistiques -->
         <div class="bg-blue-700 bg-opacity-70 rounded-lg shadow-lg p-6 mb-4">
@@ -90,7 +108,33 @@
 </template>
   
 <script>
+  import axios from 'axios';
+  import { jwtDecode } from 'jwt-decode';
+
   export default {
-    name: "profile"
+    name: "profile",
+    data() {
+      return {
+        user: null,
+      };
+    },
+    created() {
+      this.fetchProfile();
+    },
+    methods: {
+      async fetchProfile() {
+        const userId = this.$route.params.id;
+
+        try {
+          const response = await axios.get(`http://localhost:8080/api/users/${userId}`);
+
+          this.user = response.data
+
+          console.log(this.user);
+        } catch (error) {
+          console.error('Error getting profile : ', error);
+        }
+      }
+    }
   }
 </script>

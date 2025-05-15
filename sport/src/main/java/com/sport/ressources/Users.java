@@ -76,7 +76,9 @@ public class Users {
                 return Response.status(Response.Status.NOT_FOUND).build();
             }
 
-            redisService.set(cacheKey, user.toString(), 3600);
+            String json = mapper.writeValueAsString(user);
+
+            redisService.set(cacheKey, json, 3600);
 
             return Response.ok(user).build();
         } catch (Exception e) {
