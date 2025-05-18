@@ -8,6 +8,8 @@ import Admin from '../views/Admin.vue'
 import Profile from '../views/Profile.vue'
 import Cart from '../views/Cart.vue'
 import ProductDetail from '../views/ProductDetail.vue'
+import Success from '../views/Success.vue'
+import Cancel from '../views/Cancel.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -56,6 +58,16 @@ const router = createRouter({
             path: '/product/:id',
             name: 'product-detail',
             component: ProductDetail
+        },
+        {
+            path: '/success',
+            name: 'success',
+            component: Success
+        },
+        {
+            path: '/cancel',
+            name: 'cancel',
+            component: Cancel
         }
     ]
 })
