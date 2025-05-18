@@ -10,6 +10,7 @@ import Cart from '../views/Cart.vue'
 import ProductDetail from '../views/ProductDetail.vue'
 import Success from '../views/Success.vue'
 import Cancel from '../views/Cancel.vue'
+import Favoris from '../views/Favoris.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -68,6 +69,11 @@ const router = createRouter({
             path: '/cancel',
             name: 'cancel',
             component: Cancel
+        },
+        {
+            path: '/favoris/:id',
+            name: 'favoris',
+            component: Favoris
         }
     ]
 })

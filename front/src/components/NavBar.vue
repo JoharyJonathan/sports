@@ -36,6 +36,14 @@
                 Profile
               </span>
             </RouterLink>
+            <RouterLink :to="`/profile/${this.userId}`" class="nav-link group" active-class="nav-active">
+              <span class="flex items-center group-hover:border-b-2 group-hover:border-yellow-400 pb-1 px-1 transition duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.122 3.446a1 1 0 00.95.69h3.631c.969 0 1.371 1.24.588 1.81l-2.94 2.137a1 1 0 00-.364 1.118l1.122 3.446c.3.921-.755 1.688-1.54 1.118l-2.94-2.137a1 1 0 00-1.175 0l-2.94 2.137c-.785.57-1.84-.197-1.54-1.118l1.122-3.446a1 1 0 00-.364-1.118L2.36 8.873c-.783-.57-.38-1.81.588-1.81h3.631a1 1 0 00.95-.69l1.122-3.446z" />
+                </svg>
+                Favoris
+              </span>
+            </RouterLink>
           </template>
           
           <RouterLink to="/admin" class="nav-link group" active-class="nav-active">
