@@ -63,7 +63,7 @@
           <div class="space-y-3">
             <div class="flex justify-between">
               <span>Sous-total</span>
-              <span>179,97 €</span>
+              <span>{{ subTotal.toFixed(2) }} €</span>
             </div>
             <div class="flex justify-between">
               <span>Frais de livraison</span>
@@ -71,11 +71,11 @@
             </div>
             <div class="flex justify-between">
               <span>TVA (20%)</span>
-              <span>36,00 €</span>
+              <span>{{ tax.toFixed(2) }} €</span>
             </div>
             <div class="flex justify-between font-bold text-xl pt-3 border-t border-blue-600">
               <span>Total</span>
-              <span>215,97 €</span>
+              <span>{{ total.toFixed(2) }} €</span>
             </div>
           </div>
         </div>
@@ -93,12 +93,12 @@
           </div>
           
           <div class="flex gap-4 md:w-1/2">
-            <button class="bg-transparent hover:bg-blue-600 border border-blue-500 text-white font-bold px-4 py-2 rounded-lg flex-1 flex items-center justify-center">
+            <RouterLink to="/products" class="bg-transparent hover:bg-blue-600 border border-blue-500 text-white font-bold px-4 py-2 rounded-lg flex-1 flex items-center justify-center">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
               </svg>
               Continuer
-            </button>
+            </RouterLink>
             <button class="bg-green-600 hover:bg-green-500 text-white font-bold px-4 py-2 rounded-lg flex-1 flex items-center justify-center">
               Commander
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -127,6 +127,20 @@
     created() {
       this.getUserCart();
     },
+    computed: {
+      subTotal() {
+        return this.cart.items.reduce((sum, item) => {
+          const product = this.products[item.productId];
+          return sum + (product ? product.price * item.quantity : 0);
+        }, 0);
+      },
+      tax() {
+        return this.subTotal * 0.2;
+      },
+      total() {
+        return this.subTotal + this.tax;
+      }
+    },
     methods: {
       async getUserCart() {
         const userId = this.$route.params.id;
@@ -135,7 +149,7 @@
           const response = await axios.get(`http://localhost:8080/api/carts/${userId}`);
 
           this.cart = response.data;
-          console.log(this.cart.items[0]);
+          console.log(this.cart.items);
 
           for (const item of this.cart.items) {
             await this.getProduct(item.productId);
