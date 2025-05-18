@@ -403,7 +403,7 @@
     props: ['product'],
     data() {
       return {
-        product: null,
+        product: [],
         quantity: 1,
         userId: null,
       };
@@ -425,6 +425,8 @@
         }
       },
       async addToCart() {
+        const productId = this.$route.params.id;
+
         try {
           const token = localStorage.getItem('token');
           
@@ -446,7 +448,7 @@
           this.userId = decoded.sub;
 
           const payload = {
-            productId: this.product._id,
+            productId: productId,
             quantity: this.quantity
           };
 
