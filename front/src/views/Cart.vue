@@ -32,7 +32,7 @@
               </div>
               <div class="flex-grow">
                 <div class="flex justify-between">
-                  <h3 class="font-bold text-lg">{{ products[product.productId]?.name || 'Chargement...' }}</h3>
+                  <h3 class="font-bold text-lg"><RouterLink :to="`/product/${product.productId}`">{{ products[product.productId]?.name || 'Chargement...' }}</RouterLink></h3>
                   <p class="text-blue-200 mb-2">
                     Catégorie: {{ products[product.productId]?.category }}<br>
                     Description: {{ products[product.productId]?.description }}
