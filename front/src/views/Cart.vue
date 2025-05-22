@@ -152,7 +152,7 @@
         const userId = this.$route.params.id;
 
         try {
-          const response = await axios.get(`http://localhost:8080/api/carts/${userId}`);
+          const response = await axios.get(`http://localhost:8080/api/carts/cart/${userId}`);
 
           this.cart = response.data;
           console.log(this.cart.items);

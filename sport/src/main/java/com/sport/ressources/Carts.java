@@ -38,6 +38,20 @@ public class Carts {
                 .filter(Filters.eq("user_id", new ObjectId(userId)))
                 .first();
 
+        return Response.ok(cart).build();
+    }
+
+    @GET
+    @Path("/cart/{userId}")
+    public Response getUserCart(@PathParam("userId") String userId) {
+        Datastore datastore = mongoDBConnection.getDatastore();
+        Cart cart = datastore.find(Cart.class)
+                .filter(
+                    Filters.eq("user_id", new ObjectId(userId)),
+                    Filters.eq("status", "pending")
+                )
+                .first();
+
         if (cart == null) {
             cart = new Cart(new ObjectId(userId));
             datastore.save(cart);
