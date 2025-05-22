@@ -14,6 +14,7 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.PATCH;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
@@ -137,5 +138,27 @@ public class Carts {
         datastore.save(cart);
 
         return Response.ok("Cart has been cleared").build();
+    }
+
+    @PATCH
+    @Path("/update-status/{userId}")
+    public Response updateStatus(@PathParam("userId") String userId) {
+        Datastore datastore = mongoDBConnection.getDatastore();
+        Cart cart = datastore.find(Cart.class)
+                .filter(
+                    Filters.eq("user_id", new ObjectId(userId)),
+                    Filters.eq("status", "pending")
+                )
+                .first();
+
+        if (cart == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Cart not found").build();
+        }
+
+        cart.setStatus("paid");
+
+        datastore.save(cart);
+
+        return Response.ok(cart).build();
     }
 }

@@ -99,10 +99,15 @@
 </template>
   
 <script>
+  import axios from 'axios';
+
   export default {
     name: "Success",
+    created() {
+      const userId = this.$route.params.id;
+      this.updateCartStatus(userId);
+    },
     mounted() {
-      // Animation de succès au chargement
       console.log('Paiement réussi - Page Success chargée');
     },
     methods: {
@@ -117,6 +122,15 @@
       downloadReceipt() {
         // Méthode pour télécharger le reçu
         console.log('Téléchargement du reçu...');
+      },
+      async updateCartStatus(userId) {
+        try {
+          const response = await axios.patch(`http://localhost:8080/api/carts/update-status/${userId}`);
+
+          console.log(response.data);
+        } catch (error) {
+          console.error('Error updating Cart status : ', error);
+        }
       }
     }
   }

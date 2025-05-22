@@ -233,7 +233,7 @@
         const body = {
           amount: Math.round(this.total * 100),
           currency: "eur",
-          successUrl: "http://localhost:5173/success",
+          successUrl: `http://localhost:5173/success/${user}`,
           cancelUrl: "http://localhost:5173/cancel",
           customerEmail: this.getUser(user),
           metadata: {
@@ -244,8 +244,6 @@
 
         try {
           const response = await axios.post('http://localhost:8080/api/payment', body);
-
-          alert('Paiement reussi !');
           window.location.href = response.data.url;
         } catch (error) {
           console.error("Erreur lors de la création de la session de paiement :", error);

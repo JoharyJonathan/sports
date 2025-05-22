@@ -22,7 +22,7 @@ public class CORSFilter implements ContainerResponseFilter {
         headers.add("Access-Control-Allow-Headers", 
             "origin, content-type, accept, authorization, X-Requested-With");
         headers.add("Access-Control-Allow-Methods", 
-            "GET, POST, PUT, DELETE, OPTIONS, HEAD");
+            "GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD");
         
         // Important pour les requêtes OPTIONS (preflight)
         if (requestContext.getMethod().equalsIgnoreCase("OPTIONS")) {
