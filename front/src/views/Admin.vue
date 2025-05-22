@@ -132,27 +132,38 @@
           </div>
         </div>
   
-        <!-- Menu latéral -->
-        <div class="fixed left-0 top-0 h-full bg-blue-900 w-16 flex flex-col items-center py-8 hidden lg:flex mt-15">
-          <div class="w-10 h-10 bg-white rounded-full mb-10 flex items-center justify-center text-blue-800 font-bold">S</div>
-          <div class="space-y-8">
-            <div class="w-10 h-10 bg-blue-700 rounded-lg flex items-center justify-center cursor-pointer">
-              <span>📊</span>
-            </div>
-            <div class="w-10 h-10 hover:bg-blue-700 rounded-lg flex items-center justify-center cursor-pointer">
-              <span>👥</span>
-            </div>
-            <div class="w-10 h-10 hover:bg-blue-700 rounded-lg flex items-center justify-center cursor-pointer">
-              <span>🏆</span>
-            </div>
-            <div class="w-10 h-10 hover:bg-blue-700 rounded-lg flex items-center justify-center cursor-pointer">
-              <span>📅</span>
-            </div>
-            <div class="w-10 h-10 hover:bg-blue-700 rounded-lg flex items-center justify-center cursor-pointer">
-              <span>⚙️</span>
-            </div>
-          </div>
-        </div>
+        <!-- Bouton menu -->
+        <button @click="sidebarOpen = !sidebarOpen"
+              class="fixed top-4 left-4 z-50 bg-blue-700 hover:bg-blue-600 text-white px-3 py-2 rounded-lg shadow-lg">
+              ☰
+        </button>
+
+            <!-- Sidebar avec animation -->
+            <transition name="slide">
+              <div
+                v-if="sidebarOpen"
+                class="fixed top-0 left-0 h-full bg-blue-900 w-48 sm:w-64 px-4 py-8 z-40 transition-all duration-300 ease-in-out"
+              >
+                <div class="flex justify-between items-center mb-8">
+                  <div class="text-2xl font-bold text-white">Menu</div>
+                  <button @click="sidebarOpen = false" class="text-white text-xl">&times;</button>
+                </div>
+                <div class="space-y-4">
+                  <div
+                    v-for="item in menuItems"
+                    :key="item.name"
+                    :class="[
+                      'flex items-center space-x-2 px-3 py-2 rounded-md cursor-pointer',
+                      activeMenu === item.name ? 'bg-blue-700 text-white' : 'hover:bg-blue-600'
+                    ]"
+                    @click="navigateTo(item.name)"
+                  >
+                    <span>{{ item.icon }}</span>
+                    <span class="text-sm">{{ item.name }}</span>
+                  </div>
+                </div>
+              </div>
+            </transition>
       </div>
     </main>
 </template>
@@ -162,11 +173,35 @@
     name: "admin",
     data() {
       return {
-        // Vous pouvez ajouter des données ici selon vos besoins
-      }
+        sidebarOpen: false,
+        activeMenu: 'Dashboard',
+        menuItems: [
+          { name: 'Dashboard', icon: '📊' },
+          { name: 'Utilisateurs', icon: '👥' },
+          { name: 'Compétitions', icon: '🏆' },
+          { name: 'Événements', icon: '📅' },
+          { name: 'Paramètres', icon: '⚙️' },
+        ],
+      };
     },
     methods: {
-      // Vous pouvez ajouter des méthodes ici selon vos besoins
+      navigateTo(name) {
+        this.activeMenu = name;
+        console.log(`Naviguer vers : ${name}`);
+      }
     }
-  }
+  };
 </script>
+
+<style scoped>
+  .slide-enter-active,
+  .slide-leave-active {
+    transition: transform 0.3s ease;
+  }
+  .slide-enter-from {
+    transform: translateX(-100%);
+  }
+  .slide-leave-to {
+    transform: translateX(-100%);
+  }
+</style>
