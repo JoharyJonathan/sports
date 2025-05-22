@@ -99,7 +99,8 @@
               </svg>
               Continuer
             </RouterLink>
-            <button class="bg-green-600 hover:bg-green-500 text-white font-bold px-4 py-2 rounded-lg flex-1 flex items-center justify-center">
+            <button class="bg-green-600 hover:bg-green-500 text-white font-bold px-4 py-2 rounded-lg flex-1 flex items-center justify-center"
+              @click="checkout()">
               Commander
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
@@ -122,10 +123,13 @@
           items: [],
         },
         products: {},
+        total : null,
       };
     },
     created() {
       this.getUserCart();
+      const user = this.$route.params.id;
+      this.getUser(user);
     },
     computed: {
       subTotal() {
@@ -138,6 +142,8 @@
         return this.subTotal * 0.2;
       },
       total() {
+        this.total = this.subTotal + this.tax;
+        console.log('Total ', this.total);
         return this.subTotal + this.tax;
       }
     },
@@ -219,6 +225,40 @@
           window.location.reload();
         } catch (error) {
           console.error('Error clear Cart', error);
+        }
+      },
+      async checkout() {
+        const user = this.$route.params.id;
+
+        const body = {
+          amount: Math.round(this.total * 100),
+          currency: "eur",
+          successUrl: "http://localhost:5173/success",
+          cancelUrl: "http://localhost:5173/cancel",
+          customerEmail: this.getUser(user),
+          metadata: {
+            userId: user,
+            orderRef: `CMD-${new Date().getFullYear()}-${Math.floor(Math.random() * 1000)}`
+          }
+        };
+
+        try {
+          const response = await axios.post('http://localhost:8080/api/payment', body);
+
+          alert('Paiement reussi !');
+          window.location.href = response.data.url;
+        } catch (error) {
+          console.error("Erreur lors de la création de la session de paiement :", error);
+          alert("Une erreur est survenue lors du paiement.");
+        }
+      },
+      async getUser(userId) {
+        try {
+          const response = await axios.get(`http://localhost:8080/api/users/${userId}`);
+
+          console.log(response.data.email);
+        } catch (error) {
+          console.error('Error getting user ', error);
         }
       }
     }
