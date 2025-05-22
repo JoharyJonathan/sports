@@ -7,8 +7,8 @@ import dev.morphia.annotations.Id;
 import dev.morphia.annotations.Property;
 import dev.morphia.annotations.Reference;
 
-@Entity("ratings")
-public class Ratings {
+@Entity("rating")
+public class Rating {
 
     @Id
     private ObjectId id;
@@ -22,10 +22,10 @@ public class Ratings {
     @Property("score")
     private float score;
 
-    public Ratings() {
+    public Rating() {
     }
 
-    public Ratings(User user, Product product, float score) {
+    public Rating(User user, Product product, float score) {
         this.user = user;
         this.product = product;
         this.score = score;
