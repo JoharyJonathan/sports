@@ -278,9 +278,17 @@
       goToShop() {
         this.$router.push('/products');
       },
-      clearAllFavorites() {
+      async clearAllFavorites() {
         if (confirm('Êtes-vous sûr de vouloir vider tous vos favoris ?')) {
           this.favoriteProducts = [];
+          try {
+            const userId = this.$route.params.id;
+            const response = await axios.delete(`http://localhost:8080/api/favorites/clear/${userId}`);
+
+            console.log(response.data);
+          } catch (error) {
+            console.error('Error deleting favorite list : ', error);
+          }
           console.log('Tous les favoris ont été supprimés');
         }
       },

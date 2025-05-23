@@ -121,4 +121,35 @@ public class Favorites {
 
         return Response.ok(users).build();
     }
+
+    @DELETE
+    @Path("/delete/{favoriteId}")
+    public Response deleteFavorite(@PathParam("favoriteId") String favoriteId) {
+        Favorite favorite = datastore.find(Favorite.class).filter("_id", new org.bson.types.ObjectId(favoriteId)).first();
+
+        if (favorite == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Favorite not found").build();
+        }
+
+        datastore.delete(favorite);
+
+        return Response.ok(favorite).build();
+    }
+
+    @DELETE
+    @Path("/clear/{userId}")
+    public Response clearFavoritesByUser(@PathParam("userId") String userId) {
+        User user = datastore.find(User.class).filter("_id", new org.bson.types.ObjectId(userId)).first();
+
+        if (user == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity("User not found").build();
+        }
+
+        Query<Favorite> favoritesQuery = datastore.find(Favorite.class)
+            .filter("user", user);
+
+        long deletedCount = datastore.delete(favoritesQuery).getDeletedCount();
+
+        return Response.ok("Deleted " + deletedCount + " favorites for user").build();
+    }
 }
