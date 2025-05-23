@@ -111,7 +111,7 @@
               <!-- Actions -->
               <div class="flex space-x-2">
                 <button 
-                  @click="addToCart(product.id)"
+                  @click="addToCart(product.idAsString)"
                   class="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg font-medium transition-colors"
                 >
                   🛒 Ajouter au panier
@@ -166,6 +166,7 @@
   
 <script>
   import axios from 'axios';
+  import { jwtDecode } from 'jwt-decode';
 
   export default {
     name: "Favoris",
@@ -200,8 +201,51 @@
         // Ici vous pourriez ajouter une API call pour mettre à jour les favoris côté serveur
         console.log(`Produit ${productId} retiré des favoris`);
       },
-      addToCart(productId) {
-        console.log(`Produit ${productId} ajouté au panier`);
+      async addToCart(productId) {
+        try {
+          const token = localStorage.getItem('token');
+          
+          if (!token) {
+            this.$router.push('/login');
+            throw new Error('Veuillez vous connecter');
+          }
+
+          const decoded = jwtDecode(token);
+          console.log('Token décodé :', decoded);
+          
+          // Vérification de l'expiration du token
+          if (decoded.exp * 1000 < Date.now()) {
+            localStorage.removeItem('token');
+            this.$router.push('/login');
+            throw new Error('Session expirée');
+          }
+
+          this.userId = decoded.sub;
+
+          const payload = {
+            productId: productId,
+            quantity: 1
+          };
+
+          const response = await axios.post(
+            `http://localhost:8080/api/carts/${this.userId}`,
+            payload,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            }
+          );
+
+          alert('Produit ajouté au panier !');
+          console.log('Réponse du panier :', response.data);
+
+          this.$router.push(`/cart/${this.userId}`);
+          
+        } catch (error) {
+          console.error('Erreur panier :', error.response?.data || error.message);
+          alert(error.response?.data?.message || error.message);
+        }
       },
       viewProduct(productId) {
         // Navigation vers la page produit

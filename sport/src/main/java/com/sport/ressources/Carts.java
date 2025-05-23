@@ -161,4 +161,23 @@ public class Carts {
 
         return Response.ok(cart).build();
     }
+
+    @DELETE
+    @Path("/delete/{CartId}/{userId}")
+    public Response deleteCart(@PathParam("CartId") String ObjectId, @PathParam("user_id") String userId) {
+        Datastore datastore = mongoDBConnection.getDatastore();
+        Cart cart = datastore.find(Cart.class).
+                filter(
+                    Filters.eq("user_id", new ObjectId(userId))
+                )
+                .first();
+
+        if (cart == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Cart not found").build();
+        }
+
+        datastore.delete(cart);
+
+        return Response.ok(cart).build();
+    }
 }
