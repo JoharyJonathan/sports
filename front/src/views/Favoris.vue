@@ -59,7 +59,7 @@
                 class="w-full h-48 object-cover"
               >
               <button 
-                @click="removeFromFavorites(product.id)"
+                @click="removeFromFavorites(product.idAsString)"
                 class="absolute top-3 right-3 w-8 h-8 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center transition-colors"
               >
                 <span class="text-white">❤️</span>
@@ -196,9 +196,34 @@
       }
     },
     methods: {
-      removeFromFavorites(productId) {
-        this.favoriteProducts = this.favoriteProducts.filter(product => product.id !== productId);
-        // Ici vous pourriez ajouter une API call pour mettre à jour les favoris côté serveur
+      async removeFromFavorites(productId) {
+        const token = localStorage.getItem('token');
+          
+        if (!token) {
+          this.$router.push('/login');
+          throw new Error('Veuillez vous connecter');
+        }
+
+        const decoded = jwtDecode(token);
+        console.log('Token décodé :', decoded);
+          
+        // Vérification de l'expiration du token
+        if (decoded.exp * 1000 < Date.now()) {
+          localStorage.removeItem('token');
+          this.$router.push('/login');
+          throw new Error('Session expirée');
+        }
+
+        const userId = decoded.sub;
+
+        this.favoriteProducts = this.favoriteProducts.filter(product => product.idAsString !== productId);
+        try {
+          const response = await axios.delete(`http://localhost:8080/api/favorites/remove?userId=${userId}&productId=${productId}`);
+
+          console.log(response.data);
+        } catch (error) {
+          console.error('Error removing item from favorite : ', error);
+        }
         console.log(`Produit ${productId} retiré des favoris`);
       },
       async addToCart(productId) {
@@ -248,11 +273,9 @@
         }
       },
       viewProduct(productId) {
-        // Navigation vers la page produit
         this.$router.push(`/product/${productId}`);
       },
       goToShop() {
-        // Navigation vers la boutique
         this.$router.push('/products');
       },
       clearAllFavorites() {
