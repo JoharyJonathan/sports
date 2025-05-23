@@ -477,11 +477,13 @@
         const token = localStorage.getItem('token');
         const decoded = jwtDecode(token);
         console.log(decoded.sub);
+        this.userId = decoded.sub;
 
         try {
           const response = await axios.post(`http://localhost:8080/api/favorites/add?userId=${decoded.sub}&productId=${productId}`);
 
           console.log(response.data);
+          this.$router.push(`/favoris/${this.userId}`);
         } catch (error) {
           console.error('Error adding this product to your favorites', error);
         }
