@@ -95,7 +95,7 @@
                   </svg>
                   AJOUTER AU PANIER
                 </button>
-                <button class="border-2 border-white hover:bg-white hover:text-blue-900 font-bold py-3 px-6 rounded-lg flex items-center justify-center gap-2 transition duration-300">
+                <button @click="addToFavorites" class="border-2 border-white hover:bg-white hover:text-blue-900 font-bold py-3 px-6 rounded-lg flex items-center justify-center gap-2 transition duration-300">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
                   </svg>
@@ -395,7 +395,6 @@
   
 <script>
   import axios from 'axios';
-  import { RouterLink } from 'vue-router';
   import { jwtDecode } from 'jwt-decode';
 
   export default {
@@ -470,6 +469,21 @@
         } catch (error) {
           console.error('Erreur panier :', error.response?.data || error.message);
           alert(error.response?.data?.message || error.message);
+        }
+      },
+      async addToFavorites() {
+        const productId = this.$route.params.id;
+
+        const token = localStorage.getItem('token');
+        const decoded = jwtDecode(token);
+        console.log(decoded.sub);
+
+        try {
+          const response = await axios.post(`http://localhost:8080/api/favorites/add?userId=${decoded.sub}&productId=${productId}`);
+
+          console.log(response.data);
+        } catch (error) {
+          console.error('Error adding this product to your favorites', error);
         }
       }
     }
