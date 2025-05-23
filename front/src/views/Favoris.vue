@@ -117,7 +117,7 @@
                   🛒 Ajouter au panier
                 </button>
                 <button 
-                  @click="viewProduct(product.id)"
+                  @click="viewProduct(product.idAsString)"
                   class="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-lg transition-colors"
                 >
                   👁️
@@ -165,6 +165,8 @@
 </template>
   
 <script>
+  import axios from 'axios';
+
   export default {
     name: "Favoris",
     data() {
@@ -178,74 +180,11 @@
           { name: 'Accessoires', icon: '🎯' },
           { name: 'Nutrition', icon: '🥤' }
         ],
-        favoriteProducts: [
-          {
-            id: 1,
-            name: 'Haltères Réglables Pro',
-            description: 'Haltères professionnels de 5 à 40kg',
-            price: 299,
-            oldPrice: 349,
-            rating: 4.8,
-            category: 'Équipements',
-            image: '/api/placeholder/400/300',
-            isNew: false,
-            discount: 15,
-            inStock: true
-          },
-          {
-            id: 2,
-            name: 'Maillot de Football Premium',
-            description: 'Maillot respirant pour compétition',
-            price: 79,
-            oldPrice: null,
-            rating: 4.6,
-            category: 'Vêtements',
-            image: '/api/placeholder/400/300',
-            isNew: true,
-            discount: null,
-            inStock: true
-          },
-          {
-            id: 3,
-            name: 'Chaussures de Running Elite',
-            description: 'Technologie de pointe pour coureurs',
-            price: 189,
-            oldPrice: 220,
-            rating: 4.9,
-            category: 'Chaussures',
-            image: '/api/placeholder/400/300',
-            isNew: false,
-            discount: 14,
-            inStock: false
-          },
-          {
-            id: 4,
-            name: 'Smartwatch Sport+',
-            description: 'Montre connectée avec GPS intégré',
-            price: 249,
-            oldPrice: null,
-            rating: 4.7,
-            category: 'Accessoires',
-            image: '/api/placeholder/400/300',
-            isNew: true,
-            discount: null,
-            inStock: true
-          },
-          {
-            id: 5,
-            name: 'Protéines Whey Bio',
-            description: 'Complément alimentaire naturel',
-            price: 45,
-            oldPrice: 55,
-            rating: 4.5,
-            category: 'Nutrition',
-            image: '/api/placeholder/400/300',
-            isNew: false,
-            discount: 18,
-            inStock: true
-          }
-        ]
+        favoriteProducts: []
       }
+    },
+    created() {
+      this.fetchFavorites();
     },
     computed: {
       filteredProducts() {
@@ -262,7 +201,6 @@
         console.log(`Produit ${productId} retiré des favoris`);
       },
       addToCart(productId) {
-        // Logique pour ajouter au panier
         console.log(`Produit ${productId} ajouté au panier`);
       },
       viewProduct(productId) {
@@ -271,7 +209,7 @@
       },
       goToShop() {
         // Navigation vers la boutique
-        this.$router.push('/shop');
+        this.$router.push('/products');
       },
       clearAllFavorites() {
         if (confirm('Êtes-vous sûr de vouloir vider tous vos favoris ?')) {
@@ -282,6 +220,36 @@
       exportFavorites() {
         // Logique pour exporter la liste
         console.log('Export de la liste des favoris...');
+      },
+      async fetchFavorites() {
+        const userId = this.$route.params.id;
+
+        try {
+          const response = await axios.get(`http://localhost:8080/api/favorites/user/${userId}`);
+
+
+          const favorites = response.data;
+
+          const products = favorites.map(fav => fav.product);
+
+          this.favoriteProducts = products;
+          console.log(this.favoriteProducts);
+
+          // Récupérer tous les IDs
+          const productIds = products.map(p => p.idAsString);
+          console.log("IDs des produits favoris :", productIds);
+        } catch (error) {
+          console.error('Error fetching favorites products ! ', error);
+        }
+      },
+      async getProduct(productId) {
+        try {
+          const response = await axios.get(`http://localhost:8080/api/products/${productId}`);
+
+          console.log(response.data);
+        } catch (error) {
+          console.error('Error getting product : ', error);
+        }
       }
     }
   }
