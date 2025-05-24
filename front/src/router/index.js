@@ -11,6 +11,7 @@ import ProductDetail from '../views/ProductDetail.vue'
 import Success from '../views/Success.vue'
 import Cancel from '../views/Cancel.vue'
 import Favoris from '../views/Favoris.vue'
+import EditProfile from '../views/EditProfile.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -74,6 +75,11 @@ const router = createRouter({
             path: '/favoris/:id',
             name: 'favoris',
             component: Favoris
+        },
+        {
+            path: '/edit-profile/:id',
+            name: 'edit-profile',
+            component: EditProfile
         }
     ]
 })

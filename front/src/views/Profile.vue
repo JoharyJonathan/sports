@@ -15,7 +15,10 @@
         </div>
 
         <div class="bg-blue-700 bg-opacity-70 rounded-lg shadow-lg p-6 mb-4">
-          <h2 class="text-xl font-bold mb-6 border-b border-blue-600 pb-2">Informations Utilisateur</h2>
+          <div class="flex justify-between">
+            <h2 class="text-xl font-bold mb-6 border-b border-blue-600 pb-2">Informations Utilisateur</h2>
+            <RouterLink :to="`/edit-profile/${userId}`" class="mb-6 bg-green-400 rounded-xl p-2 hover:bg-green-600">Update</RouterLink>
+          </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             <div class="bg-blue-800 rounded-xl p-4 shadow-md hover:scale-105 transition-transform">
               <p class="text-sm text-blue-300 mb-1">Nom d'utilisateur</p>
@@ -116,10 +119,12 @@
     data() {
       return {
         user: null,
+        userId: null,
       };
     },
     created() {
       this.fetchProfile();
+      this.userId = this.$route.params.id;
     },
     methods: {
       async fetchProfile() {

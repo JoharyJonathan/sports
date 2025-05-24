@@ -62,29 +62,32 @@ public class Users {
         try {
             String cacheKey = "user:" + id;
             String cachedUser = redisService.get(cacheKey);
-
+    
             if (cachedUser != null) {
-                return Response.ok(cachedUser).build();
+                // ✅ On retourne une Response contenant du JSON brut
+                return Response.ok(cachedUser, MediaType.APPLICATION_JSON).build();
             }
-
+    
             User user = mongoDB.getDatastore()
                              .find(User.class)
                              .filter("_id", new ObjectId(id))
                              .first();
-
+    
             if (user == null) {
                 return Response.status(Response.Status.NOT_FOUND).build();
             }
-
+    
             String json = mapper.writeValueAsString(user);
-
+    
             redisService.set(cacheKey, json, 3600);
-
-            return Response.ok(user).build();
+    
+            // ✅ Toujours retourner une chaîne JSON
+            return Response.ok(json, MediaType.APPLICATION_JSON).build();
+    
         } catch (Exception e) {
             return Response.serverError().entity(e.getMessage()).build();
         }
-    }
+    }    
 
     @POST
     public Response createUser(User user) {
@@ -128,7 +131,8 @@ public class Users {
             mongoDB.getDatastore().save(existingUser);
 
             String cacheKey = "user:" + id;
-            redisService.set(cacheKey, existingUser.toString(), 3600);
+            String json = mapper.writeValueAsString(existingUser);
+            redisService.set(cacheKey, json, 3600);
             redisService.delete("users:list");
 
             return Response.ok(existingUser).build();
