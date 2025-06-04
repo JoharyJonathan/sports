@@ -23,6 +23,9 @@ public class User {
     @Property("category")
     private String category;
 
+    @Property("status")
+    private String status;
+
     public User() {
 
     }
@@ -74,6 +77,14 @@ public class User {
         this.category = category;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
         return "User{" + 
@@ -81,6 +92,7 @@ public class User {
                 ", username='" + username + '\'' +
                 ", email='" + email + '\'' + 
                 ", category='" + category + '\'' + 
+                ", status='" + status + '\'' +
                 '}';                
     }
 

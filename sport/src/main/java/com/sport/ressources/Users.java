@@ -115,18 +115,36 @@ public class Users {
     @Path("/{id}")
     public Response updateUser(@PathParam("id") String id, User updatedUser) {
         try {
+            if (!ObjectId.isValid(id)) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                             .entity("Invalid ID format")
+                             .build();
+            }
+    
             User existingUser = mongoDB.getDatastore()
                                     .find(User.class)
                                     .filter("_id", new ObjectId(id))
                                     .first();
-
+    
             if (existingUser == null) {
                 return Response.status(Response.Status.NOT_FOUND).build();
             }
-
-            existingUser.setUsername(updatedUser.getUsername());
-            existingUser.setEmail(updatedUser.getEmail());
-            existingUser.setPassword(updatedUser.getPassword());
+            
+            if (updatedUser.getUsername() != null) {
+                existingUser.setUsername(updatedUser.getUsername());
+            }
+            if (updatedUser.getEmail() != null) {
+                existingUser.setEmail(updatedUser.getEmail());
+            }
+            if (updatedUser.getPassword() != null) {
+                existingUser.setPassword(updatedUser.getPassword());
+            }
+            if (updatedUser.getCategory() != null) {
+                existingUser.setCategory(updatedUser.getCategory());
+            }
+            if (updatedUser.getStatus() != null) {
+                existingUser.setStatus(updatedUser.getStatus());
+            }
 
             mongoDB.getDatastore().save(existingUser);
 
