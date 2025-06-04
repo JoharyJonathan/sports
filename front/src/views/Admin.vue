@@ -611,10 +611,10 @@ export default {
 
     async deleteUser() {
       try {
-        if (!this.userToDelete || !this.userToDelete.id) {
+        if (!this.userToDelete || !this.userToDelete.idAsString) {
           throw new Error("No user selected for deletion.");
         }
-        await axios.delete(`http://localhost:8080/api/users/${this.userToDelete.id}`);
+        await axios.delete(`http://localhost:8080/api/users/${this.userToDelete.idAsString}`);
 
         console.log(`User ${this.userToDelete.username} deleted.`);
         alert('Utilisateur supprimé avec succès!');
