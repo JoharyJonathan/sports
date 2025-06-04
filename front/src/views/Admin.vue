@@ -367,14 +367,21 @@
         </div>
       </transition>
     </div>
+
+    <Products />
   </main>
 </template>
 
 <script>
+import Products from '@/components/Products.vue';
+
 import axios from 'axios';
 
 export default {
   name: "admin-users",
+  components: {
+    Products
+  },
   data() {
     return {
       // Sidebar State
