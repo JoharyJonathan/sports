@@ -7,7 +7,7 @@
         <input v-model="form.name" type="text" placeholder="Nom du produit" class="input" required />
         <input v-model="form.category" type="text" placeholder="Catégorie" class="input" required />
         <input v-model="form.description" type="text" placeholder="Description" class="input" />
-        <input v-model.number="form.stock_quantity" type="number" placeholder="Quantité en stock" class="input" required />
+        <input v-model.number="form.stockQuantity" type="number" placeholder="Quantité en stock" class="input" required />
         <input v-model.number="form.price" type="number" step="0.01" placeholder="Prix" class="input" required />
         <input v-model="form.imageUrl" type="text" placeholder="URL de l'image" class="input" />
   
@@ -23,10 +23,10 @@
           <h2 class="text-xl font-semibold">{{ product.name }}</h2>
           <p class="text-sm">Catégorie : {{ product.category }}</p>
           <p class="text-sm">Prix : {{ product.price }} €</p>
-          <p class="text-sm">Stock : {{ product.stock_quantity }}</p>
+          <p class="text-sm">Stock : {{ product.stockQuantity }}</p>
           <div class="mt-2 flex gap-2">
             <button @click="editProduct(product)" class="text-blue-600 hover:underline">Modifier</button>
-            <button @click="deleteProduct(product.id)" class="text-red-600 hover:underline">Supprimer</button>
+            <button @click="deleteProduct(product.idAsString)" class="text-red-600 hover:underline">Supprimer</button>
           </div>
         </div>
       </div>
@@ -46,9 +46,10 @@
           name: '',
           category: '',
           description: '',
-          stock_quantity: 0,
+          stockQuantity: 0,
           price: 0.0,
           imageUrl: '',
+          idAsString: '',
         },
       }
     },
@@ -61,8 +62,10 @@
         this.products = res.data
       },
       async handleSubmit() {
+        console.log('id : ', this.form.idAsString);
+
         if (this.form.id) {
-          await axios.put(`http://localhost:8080/api/products/${this.form.id}`, this.form)
+          await axios.put(`http://localhost:8080/api/products/${this.form.idAsString}`, this.form)
         } else {
           await axios.post('http://localhost:8080/api/products', this.form)
         }
@@ -84,9 +87,10 @@
           name: '',
           category: '',
           description: '',
-          stock_quantity: 0,
+          stockQuantity: 0,
           price: 0.0,
           imageUrl: '',
+          idAsString: '',
         }
       },
     },

@@ -113,28 +113,40 @@ public class Products {
                                              .find(Product.class)
                                              .filter("_id", new ObjectId(id))
                                              .first();
-
+    
             if (existingProduct == null) {
                 return Response.status(Response.Status.NOT_FOUND).build();
             }
-
-            existingProduct.setName(updatedProduct.getName());
-            existingProduct.setCategory(updatedProduct.getCategory());
-            existingProduct.setStockQuantity(updatedProduct.getStockQuantity());
-            existingProduct.setPrice(updatedProduct.getPrice());
-            existingProduct.setImageUrl(updatedProduct.getImageUrl()); // ✅ Champ image
-
+    
+            if (updatedProduct.getName() != null)
+                existingProduct.setName(updatedProduct.getName());
+    
+            if (updatedProduct.getCategory() != null)
+                existingProduct.setCategory(updatedProduct.getCategory());
+    
+            if (updatedProduct.getDescription() != null)
+                existingProduct.setDescription(updatedProduct.getDescription());
+    
+            if (updatedProduct.getStockQuantity() != null)
+                existingProduct.setStockQuantity(updatedProduct.getStockQuantity());
+    
+            if (updatedProduct.getPrice() != null)
+                existingProduct.setPrice(updatedProduct.getPrice());
+    
+            if (updatedProduct.getImageUrl() != null)
+                existingProduct.setImageUrl(updatedProduct.getImageUrl());
+    
             mongoDB.getDatastore().save(existingProduct);
-
+    
             redisService.delete("products:list");
             redisService.delete("product:" + id);
-
+    
             return Response.ok(existingProduct).build();
-
+    
         } catch (Exception e) {
             return Response.serverError().entity(e.getMessage()).build();
         }
-    }
+    }    
 
     @DELETE
     @Path("/{id}")
