@@ -163,7 +163,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-/* Tu peux ajouter des styles complémentaires ici si besoin */
-</style>
