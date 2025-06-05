@@ -22,7 +22,6 @@ public class Comments {
 
     private final Datastore datastore = new MongoDBConnection().getDatastore();
 
-    // 1. Ajouter un commentaire à un produit
     @POST
     @Path("/add")
     public Response addComment(@QueryParam("userId") String userId,
@@ -41,7 +40,6 @@ public class Comments {
         return Response.ok(comment).build();
     }
 
-    // 2. Lister les commentaires des utilisateurs pour un produit
     @GET
     @Path("/product/{productId}")
     public Response getCommentsByProduct(@PathParam("productId") String productId) {
@@ -58,7 +56,6 @@ public class Comments {
         return Response.ok(comments).build();
     }
 
-    // 3. Lister les commentaires envoyés par un utilisateur
     @GET
     @Path("/user/{userId}")
     public Response getCommentsByUser(@PathParam("userId") String userId) {
@@ -75,7 +72,6 @@ public class Comments {
         return Response.ok(comments).build();
     }
 
-    // 4. Modifier un commentaire
     @PUT
     @Path("/edit/{commentId}")
     public Response updateComment(@PathParam("commentId") String commentId, String updatedContent) {
@@ -86,13 +82,12 @@ public class Comments {
         }
 
         comment.setContent(updatedContent);
-        comment.setPublishDate(new Date()); // Mettre à jour la date
+        comment.setPublishDate(new Date());
         datastore.save(comment);
 
         return Response.ok(comment).build();
     }
 
-    // 5. Supprimer un commentaire
     @DELETE
     @Path("/delete/{commentId}")
     public Response deleteComment(@PathParam("commentId") String commentId) {
@@ -106,7 +101,6 @@ public class Comments {
         return Response.ok("Comment deleted successfully").build();
     }
 
-    // 6. Voir le détail d’un commentaire
     @GET
     @Path("/{commentId}")
     public Response getCommentById(@PathParam("commentId") String commentId) {

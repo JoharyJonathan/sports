@@ -17,7 +17,7 @@
           <button @click="fetchProducts()" class="bg-blue-700 hover:bg-blue-600 px-4 py-2 rounded-lg text-sm font-medium">
             Tous les produits
           </button>
-          <button @click="filterProductsByCategory('football')" class="bg-blue-900 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm font-medium">
+          <button @click="filterProductsByCategory('foot-ball')" class="bg-blue-900 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm font-medium">
             Football
           </button>
           <button @click="filterProductsByCategory('basket-ball')" class="bg-blue-900 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm font-medium">

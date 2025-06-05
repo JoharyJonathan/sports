@@ -1,5 +1,6 @@
 package com.sport.ressources;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.bson.types.ObjectId;
@@ -30,6 +31,13 @@ public class Carts {
 
     @Inject
     MongoDBConnection mongoDBConnection;
+
+    @GET
+    public Response getAllCarts() {
+        Datastore datastore = mongoDBConnection.getDatastore();
+        List<Cart> carts = datastore.find(Cart.class).iterator().toList();
+        return Response.ok(carts).build();
+    }
 
     @GET
     @Path("/{userId}")
