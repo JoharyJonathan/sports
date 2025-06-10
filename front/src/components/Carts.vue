@@ -33,7 +33,7 @@
                 class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 mr-2">
                 Marquer payé
               </button>
-              <button @click="deleteCart(cart.id, cart.userId)"
+              <button @click="deleteCart(cart.id)"
                 class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
                 Supprimer
               </button>
@@ -100,9 +100,10 @@
     }
   };
   
-  const deleteCart = async (cartId, userId) => {
+  const deleteCart = async (cartId) => {
     try {
-      await axios.delete(`http://localhost:8080/api/carts/delete/${cartId}/${userId}`);
+      await axios.delete(`http://localhost:8080/api/carts/delete-cart/${cartId}`);
+      console.log(cartId);
       await fetchCarts();
     } catch (err) {
       console.error('Erreur de suppression :', err);

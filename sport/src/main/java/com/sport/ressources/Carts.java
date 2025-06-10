@@ -199,4 +199,27 @@ public class Carts {
 
         return Response.ok(cart).build();
     }
+
+    @DELETE
+    @Path("/delete-cart/{CartId}")
+    public Response adminDeleteCart(@PathParam("CartId") String cartId) {
+        Datastore datastore = mongoDBConnection.getDatastore();
+    
+        ObjectId objectId;
+        try {
+            objectId = new ObjectId(cartId);
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid Cart ID").build();
+        }
+    
+        Cart cart = datastore.find(Cart.class).filter("_id", objectId).first();
+    
+        if (cart == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Cart not found").build();
+        }
+    
+        datastore.delete(cart);
+    
+        return Response.ok().entity("Cart deleted successfully").build();
+    }    
 }
