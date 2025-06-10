@@ -2,9 +2,13 @@ package com.sport.ressources;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.bson.types.ObjectId;
 
+import com.sport.dto.CartDTO;
+import com.sport.mapper.CartMapper;
+import com.sport.mapper.CartsMapper;
 import com.sport.models.Cart;
 import com.sport.models.CartItem;
 import com.sport.persistence.MongoDBConnection;
@@ -36,7 +40,10 @@ public class Carts {
     public Response getAllCarts() {
         Datastore datastore = mongoDBConnection.getDatastore();
         List<Cart> carts = datastore.find(Cart.class).iterator().toList();
-        return Response.ok(carts).build();
+
+        List<CartDTO> dtos = carts.stream().map(CartsMapper::toDTO).collect(Collectors.toList());
+
+        return Response.ok(dtos).build();
     }
 
     @GET
@@ -47,7 +54,9 @@ public class Carts {
                 .filter(Filters.eq("user_id", new ObjectId(userId)))
                 .first();
 
-        return Response.ok(cart).build();
+        CartDTO dto = CartMapper.toDTO(cart);
+
+        return Response.ok(dto).build();
     }
 
     @GET
@@ -66,7 +75,9 @@ public class Carts {
             datastore.save(cart);
         }
 
-        return Response.ok(cart).build();
+        CartDTO dto = CartMapper.toDTO(cart);
+
+        return Response.ok(dto).build();
     }
 
     @POST

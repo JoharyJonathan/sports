@@ -369,18 +369,21 @@
     </div>
 
     <Products />
+    <Carts />
   </main>
 </template>
 
 <script>
 import Products from '@/components/Products.vue';
+import Carts from '@/components/Carts.vue';
 
 import axios from 'axios';
 
 export default {
   name: "admin-users",
   components: {
-    Products
+    Products,
+    Carts,
   },
   data() {
     return {
