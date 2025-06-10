@@ -76,7 +76,8 @@
   };
   
   const formatDate = (dateStr) => {
-    const date = new Date(dateStr);
+    const cleanDateStr = dateStr.replace(/\[UTC\]$/, '');
+    const date = new Date(cleanDateStr);
     return date.toLocaleString();
   };
   
