@@ -18,9 +18,20 @@
             <!-- Product Images -->
             <div class="p-6">
               <!-- Main Image -->
-              <div class="bg-blue-700 aspect-square rounded-lg mb-4 flex items-center justify-center">
-                <span class="text-4xl text-blue-400">Image principale</span>
-              </div>
+              <template v-if="product.imageUrl">
+                <div class="bg-blue-700 aspect-square rounded-lg mb-4 overflow-hidden">
+                  <img 
+                    :src="product.imageUrl" 
+                    alt="" 
+                    class="w-full h-full object-cover"
+                  >
+                </div>
+              </template>
+              <template v-else>
+                <div class="bg-blue-700 aspect-square rounded-lg mb-4 flex items-center justify-center">
+                  <span class="text-4xl text-blue-400">Image principale</span>
+                </div>
+              </template>
               
               <!-- Thumbnail Gallery -->
               <div class="grid grid-cols-4 gap-2">

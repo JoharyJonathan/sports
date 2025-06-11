@@ -22,6 +22,13 @@ public class Comments {
 
     private final Datastore datastore = new MongoDBConnection().getDatastore();
 
+    @GET
+    @Path("")
+    public Response getAllComments() {
+        List<Comment> comments = datastore.find(Comment.class).iterator().toList();
+        return Response.ok(comments).build();
+    }
+
     @POST
     @Path("/add")
     public Response addComment(@QueryParam("userId") String userId,

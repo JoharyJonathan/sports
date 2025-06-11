@@ -370,12 +370,14 @@
 
     <Products />
     <Carts />
+    <Comments />
   </main>
 </template>
 
 <script>
 import Products from '@/components/Products.vue';
 import Carts from '@/components/Carts.vue';
+import Comments from '@/components/Comments.vue';
 
 import axios from 'axios';
 
@@ -384,6 +386,7 @@ export default {
   components: {
     Products,
     Carts,
+    Comments,
   },
   data() {
     return {
