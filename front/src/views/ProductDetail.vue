@@ -224,67 +224,40 @@
             </div>
           </div>
           
-          <!-- Individual Reviews -->
-          <div class="space-y-6">
-            <!-- Review 1 -->
-            <div class="border-b border-blue-700 pb-6">
-              <div class="flex justify-between mb-2">
-                <div class="font-semibold">Thomas D.</div>
-                <div class="text-blue-200 text-sm">Il y a 2 jours</div>
-              </div>
-              <div class="text-yellow-400 mb-2">★★★★★</div>
-              <h4 class="font-semibold mb-2">Excellent ballon pour les matchs officiels</h4>
-              <p class="text-blue-200 mb-4">
-                J'utilise ce ballon depuis plusieurs mois maintenant pour nos matchs de championnat, 
-                et je dois dire que la qualité est impressionnante. Le toucher est parfait, le rebond 
-                est régulier et la durabilité est au rendez-vous malgré une utilisation intensive.
-              </p>
-              <div class="flex gap-4">
-                <button class="text-blue-200 text-sm flex items-center gap-1 hover:text-white">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
-                  </svg>
-                  Utile (24)
-                </button>
-                <button class="text-blue-200 text-sm hover:text-white">
-                  Signaler
-                </button>
-              </div>
-            </div>
-            
-            <!-- Review 2 -->
-            <div class="border-b border-blue-700 pb-6">
-              <div class="flex justify-between mb-2">
-                <div class="font-semibold">Sophie M.</div>
-                <div class="text-blue-200 text-sm">Il y a 5 jours</div>
-              </div>
-              <div class="text-yellow-400 mb-2">★★★★★</div>
-              <h4 class="font-semibold mb-2">Bon investissement pour notre club</h4>
-              <p class="text-blue-200 mb-4">
-                Notre club amateur a investi dans plusieurs ballons de ce modèle et nous sommes 
-                très satisfaits. Ils conservent bien leur forme et leur pression même après plusieurs 
-                matchs. De plus, la prise en main est excellente même sous la pluie. Je recommande vivement.
-              </p>
-              <div class="flex gap-4">
-                <button class="text-blue-200 text-sm flex items-center gap-1 hover:text-white">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
-                  </svg>
-                  Utile (18)
-                </button>
-                <button class="text-blue-200 text-sm hover:text-white">
-                  Signaler
-                </button>
+          <div v-for="com in comments" :key="com.id">
+            <!-- Individual Reviews -->
+            <div class="space-y-6">
+              <!-- Review 1 -->
+              <div class="border-b border-blue-700 pb-6">
+                <div class="flex justify-between mb-2">
+                  <div class="font-semibold">{{ com.user.username }}</div>
+                  <div class="text-blue-200 text-sm">Il y a 2 jours</div>
+                </div>
+                <div class="text-yellow-400 mb-2">★★★★★</div>
+                <h4 class="font-semibold mb-2">Excellent ballon pour les matchs officiels</h4>
+                <p class="text-blue-200 mb-4">
+                  {{ com.content }}
+                </p>
+                <div class="flex gap-4">
+                  <button class="text-blue-200 text-sm flex items-center gap-1 hover:text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
+                    </svg>
+                    Utile (24)
+                  </button>
+                  <button class="text-blue-200 text-sm hover:text-white">
+                    Signaler
+                  </button>
+                </div>
               </div>
             </div>
-            
+          </div>
             <!-- See All Reviews Button -->
             <div class="text-center">
               <button class="bg-blue-700 hover:bg-blue-600 py-2 px-6 rounded-lg transition duration-300">
                 VOIR TOUS LES AVIS (127)
               </button>
             </div>
-          </div>
         </div>
       </section>
   
@@ -416,10 +389,12 @@
         product: [],
         quantity: 1,
         userId: null,
+        comments: null,
       };
     },
     created() {
       this.getProduct();
+      this.fetchProductsComments();
     },
     methods: {
       async getProduct() {
@@ -497,6 +472,18 @@
           this.$router.push(`/favoris/${this.userId}`);
         } catch (error) {
           console.error('Error adding this product to your favorites', error);
+        }
+      },
+      async fetchProductsComments() {
+        const productId = this.$route.params.id;
+
+        try {
+          const response = await axios.get(`http://localhost:8080/api/comments/product/${productId}`);
+
+          this.comments = response.data;
+          console.log(this.comments);
+        } catch (error) {
+          console.error('Error fetching products comments ', error);
         }
       }
     }
