@@ -20,14 +20,14 @@
             <td class="p-2 text-black">{{ comment.user?.username || 'N/A' }}</td>
             <td class="p-2 text-black">{{ comment.product?.name || 'N/A' }}</td>
             <td class="p-2 text-black">
-              <span v-if="editId !== comment.id">{{ comment.content }}</span>
+              <span v-if="editId !== comment.idAsString">{{ comment.content }}</span>
               <input v-else v-model="editContent" class="border p-1 w-full" />
             </td>
             <td class="p-2 text-black">{{ new Date(comment.publishDate).toLocaleString() }}</td>
             <td class="p-2 space-x-2">
-              <button v-if="editId !== comment.id" @click="startEdit(comment)" class="bg-blue-500 text-white px-2 py-1 rounded">Modifier</button>
-              <button v-else @click="saveEdit(comment.id)" class="bg-green-500 text-white px-2 py-1 rounded">Enregistrer</button>
-              <button @click="deleteComment(comment.id)" class="bg-red-500 text-white px-2 py-1 rounded">Supprimer</button>
+              <button v-if="editId !== comment.idAsString" @click="startEdit(comment)" class="bg-blue-500 text-white px-2 py-1 rounded">Modifier</button>
+              <button v-else @click="saveEdit(comment.idAsString)" class="bg-green-500 text-white px-2 py-1 rounded">Enregistrer</button>
+              <button @click="deleteComment(comment.idAsString)" class="bg-red-500 text-white px-2 py-1 rounded">Supprimer</button>
             </td>
           </tr>
         </tbody>
@@ -78,11 +78,11 @@
           });
       },
       startEdit(comment) {
-        this.editId = comment.id;
+        this.editId = comment.idAsString;
         this.editContent = comment.content;
       },
       saveEdit(commentId) {
-        axios.put(`http://localhost:8080/api/comments/edit/${commentId}`, this.editContent, {
+        axios.put(`http://localhost:8080/api/comments/edit/${commentId}`, `"${this.editContent}"`, {
           headers: { 'Content-Type': 'application/json' }
         })
           .then(() => {
