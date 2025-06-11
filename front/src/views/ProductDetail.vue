@@ -218,10 +218,22 @@
             <!-- Write Review CTA -->
             <div class="bg-blue-700 rounded-lg p-6 flex flex-col justify-center items-center">
               <p class="text-center mb-4">Partagez votre expérience avec ce produit</p>
-              <button class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 px-6 rounded-lg transition duration-300">
-                ÉCRIRE UN AVIS
+              <button @click="toggleForm()" class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 px-6 rounded-lg transition duration-300">
+                {{ showForm ? 'ANNULER' : 'ÉCRIRE UN AVIS' }}
               </button>
             </div>
+
+              <!-- Formulaire d'ajout de commentaire -->
+              <form v-if="showForm" @submit.prevent="submitComment" class="mt-6 w-full max-w-lg space-y-4">
+
+                <textarea v-model="newComment" rows="4" placeholder="Votre avis..."
+                  class="w-full px-4 py-2 rounded-lg bg-blue-800 text-white placeholder-blue-300 border border-blue-600" required></textarea>
+
+                <button type="submit"
+                  class="bg-green-500 hover:bg-green-600 text-black font-bold py-2 px-6 rounded-lg transition duration-300">
+                  Soumettre l’avis
+                </button>
+              </form>
           </div>
           
           <div v-for="com in comments" :key="com.id">
@@ -390,6 +402,8 @@
         quantity: 1,
         userId: null,
         comments: null,
+        showForm: false,
+        newComment: null,
       };
     },
     created() {
@@ -485,7 +499,47 @@
         } catch (error) {
           console.error('Error fetching products comments ', error);
         }
-      }
+      },
+      toggleForm() {
+        this.showForm = !this.showForm;
+      },
+      async submitComment() {
+        try {
+          const token = localStorage.getItem('token');
+          
+          if (!token) {
+            this.$router.push('/login');
+            throw new Error('Veuillez vous connecter');
+          }
+  
+          const decoded = jwtDecode(token);
+            
+          if (decoded.exp * 1000 < Date.now()) {
+            localStorage.removeItem('token');
+            this.$router.push('/login');
+            throw new Error('Session expirée');
+          }
+  
+          this.userId = decoded.sub;
+          const productId = this.$route.params.id;
+
+          const commentData = this.newComment;
+
+          const response = await axios.post(`http://localhost:8080/api/comments/add?userId=${this.userId}&productId=${productId}`, commentData, 
+          {
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }
+          );
+
+          console.log(response.data);
+          this.showForm = false;
+          this.fetchProductsComments();
+        } catch (error) {
+          console.error("Erreur lors de l'ajout du commentaire :", error);
+        }
+      },
     }
   }
 </script>
