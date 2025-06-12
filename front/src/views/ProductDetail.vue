@@ -442,48 +442,15 @@
         <h2 class="text-2xl font-bold mb-6">Récemment consultés</h2>
         
         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          <div class="bg-blue-800 rounded-lg overflow-hidden shadow-lg">
-            <div class="aspect-square bg-blue-700"></div>
-            <div class="p-2">
-              <h3 class="font-semibold text-sm truncate">Chaussures de football</h3>
-              <p class="text-yellow-400 font-bold text-sm">159,99 €</p>
-            </div>
-          </div>
-          <div class="bg-blue-800 rounded-lg overflow-hidden shadow-lg">
-            <div class="aspect-square bg-blue-700"></div>
-            <div class="p-2">
-              <h3 class="font-semibold text-sm truncate">Short d'entraînement</h3>
-              <p class="text-yellow-400 font-bold text-sm">34,99 €</p>
-            </div>
-          </div>
-          <div class="bg-blue-800 rounded-lg overflow-hidden shadow-lg">
-            <div class="aspect-square bg-blue-700"></div>
-            <div class="p-2">
-              <h3 class="font-semibold text-sm truncate">Protège-tibias</h3>
-              <p class="text-yellow-400 font-bold text-sm">24,99 €</p>
-            </div>
-          </div>
-          <div class="bg-blue-800 rounded-lg overflow-hidden shadow-lg md:block hidden">
-            <div class="aspect-square bg-blue-700"></div>
-            <div class="p-2">
-              <h3 class="font-semibold text-sm truncate">Kit d'entraînement</h3>
-              <p class="text-yellow-400 font-bold text-sm">79,99 €</p>
-            </div>
-          </div>
-          <div class="bg-blue-800 rounded-lg overflow-hidden shadow-lg lg:block hidden">
-            <div class="aspect-square bg-blue-700"></div>
-            <div class="p-2">
-              <h3 class="font-semibold text-sm truncate">Sac de sport</h3>
-              <p class="text-yellow-400 font-bold text-sm">49,99 €</p>
-            </div>
-          </div>
-          <div class="bg-blue-800 rounded-lg overflow-hidden shadow-lg lg:block hidden">
-            <div class="aspect-square bg-blue-700"></div>
-            <div class="p-2">
-              <h3 class="font-semibold text-sm truncate">Bouteille isotherme</h3>
-              <p class="text-yellow-400 font-bold text-sm">19,99 €</p>
-            </div>
-          </div>
+          <div v-for="hy in products" :key="hy.idAsString" class="bg-blue-800 rounded-lg overflow-hidden shadow-lg">
+            <RouterLink :to="`/product/${hy.idAsString}`">
+              <img :src="hy.imageUrl" alt="" class="w-full h-32 object-cover">
+              <div class="p-2">
+                <h3 class="font-semibold text-sm truncate text-white">{{ hy.name }}</h3>
+                <p class="text-yellow-400 font-bold text-sm">{{ hy.price }} €</p>
+              </div>
+            </RouterLink>
+          </div>  
         </div>
       </section>
     </main>
@@ -496,24 +463,37 @@
   export default {
     name: "ProductDetail",
     props: ['product'],
+    watch: {
+      '$route.params.id': {
+        handler() {
+          this.getProduct();
+        },
+        immediate: true,
+      }
+    },
     data() {
       return {
         product: [],
         quantity: 1,
         userId: null,
-        comments: null,
+        comments: [],
         showForm: false,
         showRate: false,
         newComment: null,
         score: 0,
         hoverRating: 0,
-        rates: null,
+        rates: [],
         averageRating: 0,
+        history: {},
+        products: [],
       };
     },
     created() {
       this.getProduct();
       this.fetchProductsComments();
+      this.getHistory();
+    },
+    mounted() {
       this.getAllScores();
     },
     methods: {
@@ -549,6 +529,18 @@
           this.averageRating = moy;
         } catch (error) {
           console.error('Error fetching scores ', error);
+        }
+      },
+      async getHistory() {
+        try {
+          const response = await axios.get("http://localhost:8000/history");
+          this.history = response.data;
+
+          this.products = this.history.global_history.map(item => JSON.parse(item.data));
+
+          console.log('Produits :', this.products);
+        } catch (error) {
+          console.error('Erreur lors du fetch de l’historique', error);
         }
       },
       async addToCart() {
