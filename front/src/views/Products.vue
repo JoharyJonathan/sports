@@ -46,7 +46,7 @@
     <section class="py-12 px-4">
       <div class="max-w-7xl mx-auto">
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          <div v-for="product in products" :key="product.id" class="bg-blue-800 rounded-lg overflow-hidden shadow-lg transition-transform duration-300 hover:shadow-xl hover:scale-105">
+          <div v-for="product in paginatedProducts" :key="product.id" class="bg-blue-800 rounded-lg overflow-hidden shadow-lg transition-transform duration-300 hover:shadow-xl hover:scale-105">
             <!-- Si une image est définie, on l'affiche en fond -->
             <div v-if="product.imageUrl" class="aspect-square bg-cover bg-center" :style="{ backgroundImage: 'url(' + product.imageUrl + ')' }"></div>
             <!-- Sinon, on affiche une zone grise -->
@@ -80,19 +80,31 @@
     <section class="pb-16 px-4">
       <div class="max-w-7xl mx-auto flex justify-center">
         <div class="flex items-center gap-2">
-          <button class="w-10 h-10 flex items-center justify-center rounded-lg bg-blue-800 hover:bg-blue-700">
+          <button
+            @click="changePage(currentPage - 1)"
+            :disabled="currentPage === 1"
+            class="w-10 h-10 flex items-center justify-center rounded-lg bg-blue-800 hover:bg-blue-700 disabled:opacity-50"
+          >
             &laquo;
           </button>
-          <button class="w-10 h-10 flex items-center justify-center rounded-lg bg-yellow-500 text-black font-bold">
-            1
+
+          <button
+            v-for="page in totalPages"
+            :key="page"
+            @click="changePage(page)"
+            :class="[
+              'w-10 h-10 flex items-center justify-center rounded-lg',
+              currentPage === page ? 'bg-yellow-500 text-black font-bold' : 'bg-blue-800 hover:bg-blue-700'
+            ]"
+          >
+            {{ page }}
           </button>
-          <button class="w-10 h-10 flex items-center justify-center rounded-lg bg-blue-800 hover:bg-blue-700">
-            2
-          </button>
-          <button class="w-10 h-10 flex items-center justify-center rounded-lg bg-blue-800 hover:bg-blue-700">
-            3
-          </button>
-          <button class="w-10 h-10 flex items-center justify-center rounded-lg bg-blue-800 hover:bg-blue-700">
+
+          <button
+            @click="changePage(currentPage + 1)"
+            :disabled="currentPage === totalPages"
+            class="w-10 h-10 flex items-center justify-center rounded-lg bg-blue-800 hover:bg-blue-700 disabled:opacity-50"
+          >
             &raquo;
           </button>
         </div>
@@ -116,50 +128,68 @@
 </template>
 
 <script>
-import axios from 'axios';
+  import axios from 'axios';
 
-export default {
-  name: "Products",
-  data() {
-    return {
-      products: []
-    };
-  },
-  created() {
-    this.fetchProducts();
-  },
-  methods: {
-    async fetchProducts() {
-      try {
-        const response = await axios.get('http://localhost:8080/api/products');
-        const rawData = response.data;
-
-        this.products = rawData;
-
-        console.log("Produits récupérés :", this.products);
-      } catch (error) {
-        console.error('Erreur lors de la récupération des produits:', error);
+  export default {
+    name: "Products",
+    data() {
+      return {
+        products: [],
+        currentPage: 1,
+        itemsPerPage: 8
+      };
+    },
+    created() {
+      this.fetchProducts();
+    },
+    computed: {
+      paginatedProducts() {
+        const start = (this.currentPage - 1) * this.itemsPerPage;
+        const end = start + this.itemsPerPage;
+        return this.products.slice(start, end);
+      },
+      totalPages() {
+        return Math.ceil(this.products.length / this.itemsPerPage);
       }
     },
+    methods: {
+      async fetchProducts() {
+        try {
+          const response = await axios.get('http://localhost:8080/api/products');
+          const rawData = response.data;
 
-    async filterProductsByCategory(category) {
-      try {
-        const response = await axios.get(`http://localhost:8080/api/products/category/${category}`);
-        const rawData = response.data;
+          this.products = rawData;
 
-        this.products = Array.isArray(rawData)
-          ? rawData.map(item => typeof item === 'string' ? this.parseRedisProduct(item) : item)
-          : [];
+          console.log("Produits récupérés :", this.products);
+        } catch (error) {
+          console.error('Erreur lors de la récupération des produits:', error);
+        }
+      },
 
-        console.log("Produits filtrés par catégorie :", this.products);
-      } catch (error) {
-        console.error('Erreur lors du filtrage par catégorie:', error);
+      async filterProductsByCategory(category) {
+        try {
+          const response = await axios.get(`http://localhost:8080/api/products/category/${category}`);
+          const rawData = response.data;
+
+          this.products = Array.isArray(rawData)
+            ? rawData.map(item => typeof item === 'string' ? this.parseRedisProduct(item) : item)
+            : [];
+
+          console.log("Produits filtrés par catégorie :", this.products);
+        } catch (error) {
+          console.error('Erreur lors du filtrage par catégorie:', error);
+        }
+      },
+
+      formatPrice(price) {
+        return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(price);
+      },
+
+      changePage(page) {
+        if (page >= 1 && page <= this.totalPages) {
+          this.currentPage = page;
+        }
       }
-    },
-
-    formatPrice(price) {
-      return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(price);
     }
   }
-}
 </script>

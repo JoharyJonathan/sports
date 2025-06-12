@@ -5,10 +5,10 @@
         <div class="absolute inset-0 bg-black opacity-40"></div>
         <div class="relative z-10 text-center px-4">
           <h1 class="text-5xl font-extrabold mb-4 tracking-tight">SPORTS ELITE</h1>
-          <p class="text-xl text-gray-200 max-w-xl mx-auto">Dépassez vos limites et atteignez l'excellence dans votre discipline</p>
-          <button class="mt-8 bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-3 px-8 rounded-full transition duration-300 transform hover:scale-105">
+          <p class="text-xl text-gray-200 max-w-xl mx-auto mb-2.5">Dépassez vos limites et atteignez l'excellence dans votre discipline</p>
+          <RouterLink to="/products" class="mt-8 bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-3 px-8 rounded-full transition duration-300 transform hover:scale-105">
             COMMENCER MAINTENANT
-          </button>
+          </Routerlink>
         </div>
       </section>
   
@@ -132,6 +132,8 @@
 </template>
   
 <script>
+import { RouterLink } from 'vue-router';
+
   export default {
     name: "Home"
   }
