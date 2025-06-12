@@ -55,7 +55,7 @@
                 <div class="text-yellow-400 flex">
                   <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
                 </div>
-                <span class="text-blue-200">(127 avis)</span>
+                <span class="text-blue-200">({{ rates.length }} avis)</span>
               </div>
               
               <div class="mb-6">
@@ -266,11 +266,11 @@
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <!-- Average Rating -->
             <div class="bg-blue-700 rounded-lg p-6 text-center">
-              <div class="text-6xl font-bold text-yellow-400 mb-2">4.9</div>
+              <div class="text-6xl font-bold text-yellow-400 mb-2">{{ averageRating }}</div>
               <div class="flex justify-center text-yellow-400 mb-2">
                 <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
               </div>
-              <p class="text-blue-200">Basé sur 127 avis</p>
+              <p class="text-blue-200">Basé sur {{ rates.length }} avis</p>
             </div>
             
             <!-- Rating Distribution -->
@@ -367,7 +367,7 @@
             <!-- See All Reviews Button -->
             <div class="text-center">
               <button class="bg-blue-700 hover:bg-blue-600 py-2 px-6 rounded-lg transition duration-300">
-                VOIR TOUS LES AVIS (127)
+                VOIR TOUS LES COMMENTAIRES ({{ comments.length }})
               </button>
             </div>
         </div>
@@ -507,11 +507,14 @@
         newComment: null,
         score: 0,
         hoverRating: 0,
+        rates: null,
+        averageRating: 0,
       };
     },
     created() {
       this.getProduct();
       this.fetchProductsComments();
+      this.getAllScores();
     },
     methods: {
       async getProduct() {
@@ -524,6 +527,28 @@
           console.log(this.product);
         } catch (error) {
           console.error('Error Product not found : ', error);
+        }
+      },
+      async getAllScores() {
+        const productId = this.$route.params.id;
+
+        try {
+          const response = await axios.get(`http://localhost:8080/api/ratings/product/${productId}`);
+
+          this.rates = response.data;
+          console.log('Scores ', this.rates[0].score);
+          console.log(this.rates.length);
+
+          let sum = 0;
+          for (let i = 0; i < this.rates.length; i++) {
+            sum += this.rates[i].score;
+          }
+
+          const moy = sum / this.rates.length;
+          console.log(moy);
+          this.averageRating = moy;
+        } catch (error) {
+          console.error('Error fetching scores ', error);
         }
       },
       async addToCart() {
