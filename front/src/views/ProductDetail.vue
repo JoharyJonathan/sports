@@ -160,7 +160,18 @@
       <!-- Product Reviews Section -->
       <section class="max-w-7xl mx-auto px-4 py-8">
         <div class="bg-blue-800 rounded-lg shadow-xl p-6">
-          <h2 class="text-2xl font-bold mb-6">Avis clients</h2>
+          <div class="flex justify-between">
+            <h2 class="text-2xl font-bold mb-6">Avis clients</h2>
+            <button @click="toggleRate" class="bg-yellow-500 hover:bg-yellow-600 rounded-xl text-black px-1.5 mb-6">{{ showRate ? 'Annuler' : 'Noter ce produit' }}</button>
+          </div>
+
+          <form v-if="showRate" @submit.prevent="addScore" class="mt-6 w-full max-w-lg space-y-4">
+            <input type="number" step="0.01" v-model="score">
+            <button type="submit"
+              class="bg-green-500 hover:bg-green-600 text-black font-bold py-2 px-6 rounded-lg transition duration-300">
+              Soumettre le score
+            </button>
+          </form>
           
           <!-- Reviews Summary -->
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -403,7 +414,9 @@
         userId: null,
         comments: null,
         showForm: false,
+        showRate: false,
         newComment: null,
+        score: 0,
       };
     },
     created() {
@@ -540,6 +553,47 @@
           console.error("Erreur lors de l'ajout du commentaire :", error);
         }
       },
+      toggleRate() {
+        this.showRate = !this.showRate;
+      },
+      async addScore() {
+        try {
+          const token = localStorage.getItem('token');
+          
+          if (!token) {
+            this.$router.push('/login');
+            throw new Error('Veuillez vous connecter');
+          }
+  
+          const decoded = jwtDecode(token);
+            
+          if (decoded.exp * 1000 < Date.now()) {
+            localStorage.removeItem('token');
+            this.$router.push('/login');
+            throw new Error('Session expirée');
+          }
+  
+          this.userId = decoded.sub;
+          const productId = this.$route.params.id;
+
+          const ratingdata = {
+            user: this.userId,
+            product: productId,
+            score: this.score
+          }
+
+          const response = await axios.post(`http://localhost:8080/api/ratings/add?userId=${ratingdata.user}&productId=${ratingdata.product}&score=${ratingdata.score}`, ratingdata, 
+          {
+            headers: {
+                  'Content-Type': 'application/json'
+            }
+          }
+          );
+          console.log(response.data);
+        } catch (error) {
+          console.error('Error adding score ', error);
+        }
+      }
     }
   }
 </script>
