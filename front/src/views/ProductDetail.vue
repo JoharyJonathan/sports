@@ -160,18 +160,107 @@
       <!-- Product Reviews Section -->
       <section class="max-w-7xl mx-auto px-4 py-8">
         <div class="bg-blue-800 rounded-lg shadow-xl p-6">
-          <div class="flex justify-between">
-            <h2 class="text-2xl font-bold mb-6">Avis clients</h2>
-            <button @click="toggleRate" class="bg-yellow-500 hover:bg-yellow-600 rounded-xl text-black px-1.5 mb-6">{{ showRate ? 'Annuler' : 'Noter ce produit' }}</button>
+          <div class="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-2xl p-6 shadow-lg border border-yellow-100 mb-4">
+          <!-- En-tête avec titre et bouton -->
+          <div class="flex justify-between items-center mb-6">
+            <div class="flex items-center">
+              <div class="w-3 h-8 bg-gradient-to-b from-yellow-400 to-orange-400 rounded-full mr-3"></div>
+              <h2 class="text-2xl font-bold text-gray-800 flex items-center">
+                <svg class="w-6 h-6 text-yellow-500 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+                Avis clients
+              </h2>
+            </div>
+            
+            <button 
+              @click="toggleRate" 
+              :class="showRate ? 'bg-red-500 hover:bg-red-600' : 'bg-gradient-to-r from-yellow-400 to-orange-400 hover:from-yellow-500 hover:to-orange-500'"
+              class="text-white font-semibold px-6 py-3 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg flex items-center"
+            >
+              <svg v-if="!showRate" class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+              <svg v-else class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+              {{ showRate ? 'Annuler' : 'Noter ce produit' }}
+            </button>
           </div>
 
-          <form v-if="showRate" @submit.prevent="addScore" class="mt-6 w-full max-w-lg space-y-4">
-            <input type="number" step="0.01" v-model="score">
-            <button type="submit"
-              class="bg-green-500 hover:bg-green-600 text-black font-bold py-2 px-6 rounded-lg transition duration-300">
-              Soumettre le score
-            </button>
-          </form>
+          <!-- Formulaire de notation avec étoiles -->
+          <div v-if="showRate" class="bg-white rounded-xl p-6 shadow-inner border border-yellow-200">
+            <form @submit.prevent="addScore" class="space-y-6">
+              <!-- Section étoiles -->
+              <div class="text-center">
+                <h3 class="text-lg font-semibold text-gray-700 mb-4">Quelle note donnez-vous à ce produit ?</h3>
+                
+                <!-- Affichage des étoiles -->
+                <div class="flex justify-center items-center space-x-2 mb-4">
+                  <button
+                    v-for="star in 5"
+                    :key="star"
+                    type="button"
+                    @click="setRating(star)"
+                    @mouseover="hoverRating = star"
+                    @mouseleave="hoverRating = 0"
+                    class="transition-all duration-200 transform hover:scale-110 focus:outline-none"
+                  >
+                    <svg 
+                      :class="[
+                        'w-10 h-10 transition-colors duration-200',
+                        (hoverRating >= star || score >= star) 
+                          ? 'text-yellow-400 drop-shadow-lg' 
+                          : 'text-gray-300 hover:text-yellow-200'
+                      ]"
+                      fill="currentColor" 
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                  </button>
+                </div>
+
+                <!-- Texte descriptif de la note -->
+                <div class="mb-6">
+                  <p class="text-sm text-gray-600 mb-2">Note sélectionnée :</p>
+                  <div class="flex items-center justify-center">
+                    <span class="text-2xl font-bold text-yellow-600 mr-2">{{ score.toFixed(1) }}</span>
+                    <span class="text-lg text-gray-500">/ 5.0</span>
+                  </div>
+                  <p class="text-sm text-gray-500 mt-1">{{ getRatingText(score) }}</p>
+                </div>
+
+                <!-- Échelle de notation visuelle -->
+                <div class="bg-gray-100 rounded-full h-3 w-full max-w-xs mx-auto mb-6 overflow-hidden">
+                  <div 
+                    :style="{ width: (score / 5) * 100 + '%' }"
+                    class="h-full bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full transition-all duration-300"
+                  ></div>
+                </div>
+              </div>
+
+              <!-- Bouton de soumission -->
+              <div class="text-center">
+                <button 
+                  type="submit"
+                  :disabled="score === 0"
+                  :class="score === 0 ? 'bg-gray-300 cursor-not-allowed' : 'bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 transform hover:scale-105'"
+                  class="text-white font-bold py-3 px-8 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center mx-auto"
+                >
+                  <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                  </svg>
+                  Soumettre la note
+                </button>
+                
+                <p class="text-xs text-gray-500 mt-2">
+                  Votre avis nous aide à améliorer nos produits
+                </p>
+              </div>
+            </form>
+          </div>
+        </div>
           
           <!-- Reviews Summary -->
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -417,6 +506,7 @@
         showRate: false,
         newComment: null,
         score: 0,
+        hoverRating: 0,
       };
     },
     created() {
@@ -554,46 +644,110 @@
         }
       },
       toggleRate() {
-        this.showRate = !this.showRate;
-      },
-      async addScore() {
-        try {
-          const token = localStorage.getItem('token');
-          
-          if (!token) {
-            this.$router.push('/login');
-            throw new Error('Veuillez vous connecter');
-          }
-  
-          const decoded = jwtDecode(token);
-            
-          if (decoded.exp * 1000 < Date.now()) {
-            localStorage.removeItem('token');
-            this.$router.push('/login');
-            throw new Error('Session expirée');
-          }
-  
-          this.userId = decoded.sub;
-          const productId = this.$route.params.id;
-
-          const ratingdata = {
-            user: this.userId,
-            product: productId,
-            score: this.score
-          }
-
-          const response = await axios.post(`http://localhost:8080/api/ratings/add?userId=${ratingdata.user}&productId=${ratingdata.product}&score=${ratingdata.score}`, ratingdata, 
-          {
-            headers: {
-                  'Content-Type': 'application/json'
-            }
-          }
-          );
-          console.log(response.data);
-        } catch (error) {
-          console.error('Error adding score ', error);
-        }
+      this.showRate = !this.showRate;
+      // Réinitialiser le score quand on annule
+      if (!this.showRate) {
+        this.score = 0;
+        this.hoverRating = 0;
       }
+    },
+    setRating(rating) {
+      this.score = rating;
+    },
+    updateStarsFromInput() {
+      // Valider que la valeur est dans la plage 0-5
+      if (this.score > 5) this.score = 5;
+      if (this.score < 0) this.score = 0;
+    },
+    getStarClass(star) {
+      const displayRating = this.hoverRating || this.score;
+      
+      if (displayRating >= star) {
+        // Étoile complètement remplie
+        return 'text-yellow-400 drop-shadow-lg';
+      } else if (displayRating > star - 1 && displayRating < star) {
+        // Étoile partiellement remplie (entre deux étoiles)
+        return 'text-yellow-300 drop-shadow-md';
+      } else {
+        // Étoile vide
+        return 'text-gray-300 hover:text-yellow-200';
+      }
+    },
+    getRatingText(score) {
+      if (score === 0) return "Aucune note sélectionnée";
+      if (score <= 1) return "Très décevant";
+      if (score <= 2) return "Décevant";
+      if (score <= 3) return "Correct";
+      if (score <= 4) return "Bien";
+      if (score < 5) return "Très bien";
+      return "Excellent";
+    },
+    async addScore() {
+      try {
+        const token = localStorage.getItem('token');
+        
+        if (!token) {
+          this.$router.push('/login');
+          throw new Error('Veuillez vous connecter');
+        }
+
+        const decoded = jwtDecode(token);
+          
+        if (decoded.exp * 1000 < Date.now()) {
+          localStorage.removeItem('token');
+          this.$router.push('/login');
+          throw new Error('Session expirée');
+        }
+
+        this.userId = decoded.sub;
+        const productId = this.$route.params.id;
+
+        const ratingdata = {
+          user: this.userId,
+          product: productId,
+          score: this.score
+        }
+
+        const response = await axios.post(`http://localhost:8080/api/ratings/add?userId=${ratingdata.user}&productId=${ratingdata.product}&score=${ratingdata.score}`, ratingdata, 
+        {
+          headers: {
+                'Content-Type': 'application/json'
+          }
+        }
+        );
+        
+        console.log(response.data);
+        
+        // Feedback utilisateur
+        alert('Votre note a été enregistrée avec succès !');
+        
+        // Réinitialiser le formulaire
+        this.showRate = false;
+        this.score = 0;
+        this.hoverRating = 0;
+        
+      } catch (error) {
+        console.error('Error adding score ', error);
+        alert('Erreur lors de l\'enregistrement de votre note');
+      }
+    }
     }
   }
 </script>
+
+<style scoped>
+  /* Animation pour les étoiles */
+  .star-hover {
+    filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.6));
+  }
+
+  /* Effet de pulsation pour les étoiles actives */
+  @keyframes pulse-star {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+
+  .star-active {
+    animation: pulse-star 0.6s ease-in-out;
+  }
+</style>
