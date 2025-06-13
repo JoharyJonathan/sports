@@ -32,11 +32,13 @@
         </div>
         <div class="flex items-center gap-2 w-full md:w-auto">
           <label class="text-sm whitespace-nowrap">Trier par:</label>
-          <select class="bg-blue-900 border border-blue-700 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500 w-full md:w-auto">
-            <option>Popularité</option>
-            <option>Prix croissant</option>
-            <option>Prix décroissant</option>
-            <option>Nouveautés</option>
+          <select
+            v-model="sortOption"
+            @change="changePage(1)"
+            class="bg-blue-900 border border-blue-700 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500 w-full md:w-auto"
+          >
+            <option value="asc">Prix croissant</option>
+            <option value="desc">Prix décroissant</option>
           </select>
         </div>
       </div>
@@ -136,13 +138,22 @@
       return {
         products: [],
         currentPage: 1,
-        itemsPerPage: 8
+        itemsPerPage: 8,
+        sortOption: 'asc',
       };
     },
     created() {
       this.fetchProducts();
     },
     computed: {
+      sortedProducts() {
+        if (this.sortOption === 'asc') {
+          return [...this.products].sort((a, b) => a.price - b.price);
+        } else if (this.sortOption === 'desc') {
+          return [...this.products].sort((a, b) => b.price - a.price);
+        }
+        return this.products;
+      },
       paginatedProducts() {
         const start = (this.currentPage - 1) * this.itemsPerPage;
         const end = start + this.itemsPerPage;
