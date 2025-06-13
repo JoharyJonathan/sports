@@ -12,6 +12,7 @@ import Success from '../views/Success.vue'
 import Cancel from '../views/Cancel.vue'
 import Favoris from '../views/Favoris.vue'
 import EditProfile from '../views/EditProfile.vue'
+import ProductCategory from '../views/ProductCategory.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -80,6 +81,11 @@ const router = createRouter({
             path: '/edit-profile/:id',
             name: 'edit-profile',
             component: EditProfile
+        },
+        {
+            path: '/products/category/:category',
+            name: 'category-view',
+            component: ProductCategory
         }
     ]
 })
