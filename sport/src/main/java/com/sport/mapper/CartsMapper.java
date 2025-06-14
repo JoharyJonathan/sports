@@ -12,15 +12,19 @@ public class CartsMapper {
         if (cart == null) return null;
 
         CartDTO dto = new CartDTO();
-        dto.setId(cart.getId().toHexString());
-        dto.setUserId(cart.getUserId().toHexString());
+        dto.setId(cart.getId() != null ? cart.getId().toHexString() : null);
+        dto.setUserId(cart.getUserId() != null ? cart.getUserId().toHexString() : null);
         dto.setCreatedAt(cart.getCreatedAt());
         dto.setStatus(cart.getStatus());
 
         List<ItemDTO> itemDTOs = cart.getItems().stream()
             .map(item -> {
                 ItemDTO itemDTO = new ItemDTO();
-                itemDTO.setProductId(item.getProductId().toHexString());
+                if (item.getProductId() != null) {
+                    itemDTO.setProductId(item.getProductId().toHexString());
+                } else {
+                    System.err.println("Warning: CartItem with null productId found in cart. Cart ID: " + dto.getId());
+                }
                 itemDTO.setQuantity(item.getQuantity());
                 return itemDTO;
             }).collect(Collectors.toList());
