@@ -21,7 +21,7 @@
             <div class="p-6">
               <h3 class="text-xl font-bold mb-2">Football</h3>
               <p class="text-blue-200 mb-4">Équipement, entraînement et conseils pour passionnés de football</p>
-              <button class="text-yellow-400 font-semibold hover:text-yellow-300">Découvrir →</button>
+              <RouterLink to="/products/category/foot-ball" class="text-yellow-400 font-semibold hover:text-yellow-300">Découvrir →</RouterLink>
             </div>
           </div>
           <div class="bg-blue-800 rounded-lg overflow-hidden shadow-lg transform transition duration-300 hover:scale-105">
@@ -29,7 +29,7 @@
             <div class="p-6">
               <h3 class="text-xl font-bold mb-2">Basketball</h3>
               <p class="text-blue-200 mb-4">Tout pour améliorer votre jeu sur le terrain de basket</p>
-              <button class="text-yellow-400 font-semibold hover:text-yellow-300">Découvrir →</button>
+              <RouterLink to="/products/category/basket-ball" class="text-yellow-400 font-semibold hover:text-yellow-300">Découvrir →</RouterLink>
             </div>
           </div>
           <div class="bg-blue-800 rounded-lg overflow-hidden shadow-lg transform transition duration-300 hover:scale-105">
@@ -37,7 +37,7 @@
             <div class="p-6">
               <h3 class="text-xl font-bold mb-2">Running</h3>
               <p class="text-blue-200 mb-4">Chaussures, vêtements et accessoires pour la course à pied</p>
-              <button class="text-yellow-400 font-semibold hover:text-yellow-300">Découvrir →</button>
+              <RouterLink to="/products/category/running" class="text-yellow-400 font-semibold hover:text-yellow-300">Découvrir →</RouterLink>
             </div>
           </div>
         </div>
