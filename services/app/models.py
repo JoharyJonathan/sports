@@ -27,9 +27,9 @@ class Product(BaseModel):
     image_Url: Optional[HttpUrl] = None
     
     class Config:
-        allow_population_by_field_name = True
+        validate_by_name = True
         json_encoders = {ObjectId: str}
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "name": "ballon",
                 "category": "basket-ball",
