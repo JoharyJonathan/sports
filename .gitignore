@@ -12,3 +12,6 @@
 
 # Fichiers .pyc
 *.pyc
+
+# Fichiers .csv
+*.csv
