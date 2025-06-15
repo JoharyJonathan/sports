@@ -5,7 +5,7 @@
         <div class="flex items-center text-sm text-blue-200">
           <RouterLink to="/" class="hover:text-white">Accueil</RouterLink>
           <span class="mx-2">/</span>
-          <RouterLink to="/" class="hover:text-white">{{ product.category }}</RouterLink>
+          <RouterLink :to="`/products/category/${product.category}`" class="hover:text-white">{{ product.category }}</RouterLink>
           <span class="mx-2">/</span>
           <span class="text-yellow-400">{{ product.name }}</span>
         </div>
