@@ -95,7 +95,7 @@
                 <h3 class="font-semibold mb-2">Quantité:</h3>
                 <div class="flex items-center">
                   <button class="bg-blue-900 px-3 py-1 rounded-l-lg text-xl font-bold">-</button>
-                  <input type="number" v-model="quantity" min="1" class="bg-blue-700 border-y border-blue-600 w-16 py-1 text-center" />
+                  <input type="number" v-model="quantity" min="1" :max="product.stockQuantity" class="bg-blue-700 border-y border-blue-600 w-16 py-1 text-center" />
                   <button class="bg-blue-900 px-3 py-1 rounded-r-lg text-xl font-bold">+</button>
                 </div>
               </div>
