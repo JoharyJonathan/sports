@@ -12,32 +12,30 @@
         </div>
       </section>
   
-      <!-- Featured Categories -->
       <section class="py-16 px-4 max-w-7xl mx-auto">
         <h2 class="text-3xl font-bold text-center mb-12">DISCIPLINES POPULAIRES</h2>
+        
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div class="bg-blue-800 rounded-lg overflow-hidden shadow-lg transform transition duration-300 hover:scale-105">
+          <div
+            v-for="(categoryName, index) in categories"
+            :key="index"
+            class="bg-blue-800 rounded-lg overflow-hidden shadow-lg transform transition duration-300 hover:scale-105"
+          >
             <div class="h-48 bg-blue-600"></div>
             <div class="p-6">
-              <h3 class="text-xl font-bold mb-2">Football</h3>
-              <p class="text-blue-200 mb-4">Équipement, entraînement et conseils pour passionnés de football</p>
-              <RouterLink to="/products/category/foot-ball" class="text-yellow-400 font-semibold hover:text-yellow-300">Découvrir →</RouterLink>
-            </div>
-          </div>
-          <div class="bg-blue-800 rounded-lg overflow-hidden shadow-lg transform transition duration-300 hover:scale-105">
-            <div class="h-48 bg-blue-600"></div>
-            <div class="p-6">
-              <h3 class="text-xl font-bold mb-2">Basketball</h3>
-              <p class="text-blue-200 mb-4">Tout pour améliorer votre jeu sur le terrain de basket</p>
-              <RouterLink to="/products/category/basket-ball" class="text-yellow-400 font-semibold hover:text-yellow-300">Découvrir →</RouterLink>
-            </div>
-          </div>
-          <div class="bg-blue-800 rounded-lg overflow-hidden shadow-lg transform transition duration-300 hover:scale-105">
-            <div class="h-48 bg-blue-600"></div>
-            <div class="p-6">
-              <h3 class="text-xl font-bold mb-2">Running</h3>
-              <p class="text-blue-200 mb-4">Chaussures, vêtements et accessoires pour la course à pied</p>
-              <RouterLink to="/products/category/running" class="text-yellow-400 font-semibold hover:text-yellow-300">Découvrir →</RouterLink>
+              
+              <h3 class="text-xl font-bold mb-2">{{ categoryName }}</h3> 
+              
+              <p class="text-blue-200 mb-4">
+                  Découvrez l'équipement, l'entraînement et les conseils pour le {{ categoryName }}.
+              </p>
+              
+              <RouterLink
+                :to="`/products/category/${categoryName}`" 
+                class="text-yellow-400 font-semibold hover:text-yellow-300"
+              >
+                Découvrir →
+              </RouterLink>
             </div>
           </div>
         </div>
@@ -132,9 +130,28 @@
 </template>
   
 <script>
-import { RouterLink } from 'vue-router';
+  import axios from 'axios';
 
   export default {
-    name: "Home"
+    name: "Home",
+    data() {
+      return {
+        categories: null
+      }
+    },
+    created() {
+      this.getCategories();
+    },
+    methods: {
+      async getCategories() {
+        try {
+          const response = await axios.get('http://localhost:8000/categories');
+          this.categories = JSON.parse(JSON.stringify(response.data.categories));
+          console.log(this.categories);
+        } catch (error) {
+          console.error('Error fetching categories ', error);
+        }
+      }
+    }
   }
 </script>
