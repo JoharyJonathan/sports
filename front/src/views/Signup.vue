@@ -88,12 +88,13 @@
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="" disabled selected>Sélectionnez un sport</option>
-              <option value="football">Football</option>
-              <option value="basketball">Basketball</option>
-              <option value="tennis">Tennis</option>
-              <option value="running">Course à pied</option>
-              <option value="swimming">Natation</option>
-              <option value="cycling">Cyclisme</option>
+              <option 
+                v-for="(sport, index) in categories"
+                :key="index"  
+                :value="sport"
+              >
+                {{ sport.charAt(0).toUpperCase() + sport.slice(1) }} 
+              </option>
               <option value="other">Autre</option>
             </select>
           </div>
@@ -196,8 +197,12 @@
         confirmPassword: '',
         favoriteSport: '',
         acceptTerms: false,
-        newsletter: false
+        newsletter: false,
+        categories: null
       };
+    },
+    created() {
+      this.getCategories();
     },
     methods: {
       async handleSignup() {
@@ -237,6 +242,16 @@
         } catch (error) {
           console.error('Erreur lors de l\'inscription:', error.response?.data || error.message);
           alert("Une erreur s'est produite pendant l'inscription.");
+        }
+      },
+      async getCategories() {
+        try {
+          const response = await axios.get('http://localhost:8000/categories')
+
+          this.categories = response.data.categories;
+          console.log(this.categories);
+        } catch (error) {
+          console.error('Error fetching categories ', error);
         }
       }
     }
