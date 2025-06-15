@@ -5,6 +5,7 @@ from ..models import Product
 import csv
 import io
 import os
+import pandas as pd
 
 router = APIRouter()
 
@@ -52,3 +53,11 @@ async def export_products_to_local_csv():
             writer.writerow(product)
 
     return {"message": f"Fichier exporté avec succès à {EXPORT_PATH}"}
+
+@router.get("/categories")
+async def get_categories():
+    df = pd.read_csv("app/private_exports/products.csv")
+    df["category"] = df["category"].fillna("")
+    unique_categories = df["category"].unique().tolist()
+    
+    return {"categories": unique_categories}
