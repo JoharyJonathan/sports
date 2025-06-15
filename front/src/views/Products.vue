@@ -17,18 +17,11 @@
           <button @click="fetchProducts()" class="bg-blue-700 hover:bg-blue-600 px-4 py-2 rounded-lg text-sm font-medium">
             Tous les produits
           </button>
-          <button @click="filterProductsByCategory('foot-ball')" class="bg-blue-900 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm font-medium">
-            Football
-          </button>
-          <button @click="filterProductsByCategory('basket-ball')" class="bg-blue-900 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm font-medium">
-            Basketball
-          </button>
-          <button @click="filterProductsByCategory('running')" class="bg-blue-900 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm font-medium">
-            Running
-          </button>
-          <button @click="filterProductsByCategory('tennis')" class="bg-blue-900 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm font-medium">
-            Tennis
-          </button>
+          <div v-for="(category, index) in categories" :key="index">
+            <button @click="filterProductsByCategory(category)" class="bg-blue-900 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm font-medium">
+              {{ category }}
+            </button>
+          </div>
         </div>
         <div class="flex items-center gap-2 w-full md:w-auto">
           <label class="text-sm whitespace-nowrap">Trier par:</label>
@@ -140,10 +133,12 @@
         currentPage: 1,
         itemsPerPage: 8,
         sortOption: 'asc',
+        categories: null,
       };
     },
     created() {
       this.fetchProducts();
+      this.getCategories();
     },
     computed: {
       sortedProducts() {
@@ -199,6 +194,17 @@
       changePage(page) {
         if (page >= 1 && page <= this.totalPages) {
           this.currentPage = page;
+        }
+      },
+
+      async getCategories() {
+        try {
+          const response = await axios.get('http://localhost:8000/categories');
+
+          this.categories = response.data.categories;
+          console.log(this.categories);
+        } catch (error) {
+          console.error('Error fetching categories ', error);
         }
       }
     }
