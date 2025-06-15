@@ -60,7 +60,9 @@
               
               <div class="mb-6">
                 <span class="text-3xl font-bold text-yellow-400">{{ product.price }} €</span>
-                <p class="text-green-400 mt-1">En stock - Livraison sous 24h</p>
+                <p :class="product.stockQuantity > 10 ? 'text-green-400' : 'text-red-400'" class="mt-1">
+                  {{ product.stockQuantity > 10 ? 'En stock - Livraison sous 24h' : 'En Rupture de stock' }}
+                </p>
               </div>
               
               <p class="text-blue-100 mb-6">
