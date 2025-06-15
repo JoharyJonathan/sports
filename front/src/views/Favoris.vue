@@ -27,19 +27,30 @@
         <!-- Filtres rapides -->
         <div class="mb-6">
           <div class="flex flex-wrap gap-3">
-            <button 
-              v-for="category in categories" 
-              :key="category.name"
-              @click="selectedCategory = category.name"
+            <button
+              @click="selectedCategory = 'Tous'"
               :class="[
                 'px-4 py-2 rounded-full text-sm font-medium transition-colors',
-                selectedCategory === category.name
+                selectedCategory === 'Tous'
+                  ? 'bg-green-600 text-white'
+                  : 'bg-blue-700 hover:bg-blue-600 text-blue-200'
+              ]"
+            >
+              Tous
+            </button>
+            <button 
+              v-for="category in categories" 
+              :key="category"
+              @click="selectedCategory = category"
+              :class="[
+                'px-4 py-2 rounded-full text-sm font-medium transition-colors',
+                selectedCategory === category
                   ? 'bg-green-600 text-white'
                   : 'bg-blue-700 hover:bg-blue-600 text-blue-200'
               ]"
             >
               <span class="mr-1">{{ category.icon }}</span>
-              {{ category.name }}
+              {{ category }}
             </button>
           </div>
         </div>
@@ -54,7 +65,7 @@
             <!-- Image du produit -->
             <div class="relative">
               <img 
-                :src="product.image" 
+                :src="product.imageUrl" 
                 :alt="product.name"
                 class="w-full h-48 object-cover"
               >
@@ -173,19 +184,13 @@
     data() {
       return {
         selectedCategory: 'Tous',
-        categories: [
-          { name: 'Tous', icon: '🏆' },
-          { name: 'Équipements', icon: '🏋️' },
-          { name: 'Vêtements', icon: '👕' },
-          { name: 'Chaussures', icon: '👟' },
-          { name: 'Accessoires', icon: '🎯' },
-          { name: 'Nutrition', icon: '🥤' }
-        ],
-        favoriteProducts: []
+        categories: [],
+        favoriteProducts: [],
       }
     },
     created() {
       this.fetchFavorites();
+      this.getCategories();
     },
     computed: {
       filteredProducts() {
@@ -324,6 +329,16 @@
           console.log(response.data);
         } catch (error) {
           console.error('Error getting product : ', error);
+        }
+      },
+      async getCategories() {
+        try {
+          const response = await axios.get('http://localhost:8000/categories');
+
+          this.categories = response.data.categories;
+          console.log(this.categories);
+        } catch (error) {
+          console.error('Error fetching categories ', error);
         }
       }
     }
