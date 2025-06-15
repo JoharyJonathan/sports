@@ -13,25 +13,43 @@
       </section>
   
       <section class="py-16 px-4 max-w-7xl mx-auto">
-        <h2 class="text-3xl font-bold text-center mb-12">DISCIPLINES POPULAIRES</h2>
-        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <h2 class="text-3xl font-bold text-center mb-12">DISCIPLINES POPULAIRES</h2>
+
+      <div class="relative">
+        <button
+        @click="prevSlide"
+        :disabled="currentIndex === 0"
+        class="absolute left-0 top-1/2 -translate-y-1/2 bg-blue-900 hover:bg-blue-800 text-white p-4 rounded-full shadow-lg z-10 transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed hover:scale-110"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+      </button>
+
+      <button
+        @click="nextSlide"
+        :disabled="currentIndex >= categories.length - itemsPerPage"
+        class="absolute right-0 top-1/2 -translate-y-1/2 bg-blue-900 hover:bg-blue-800 text-white p-4 rounded-full shadow-lg z-10 transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed hover:scale-110"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+      </button>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 overflow-hidden">
           <div
-            v-for="(categoryName, index) in categories"
-            :key="index"
+            v-for="(categoryName, index) in visibleCategories"
+            :key="categoryName"
             class="bg-blue-800 rounded-lg overflow-hidden shadow-lg transform transition duration-300 hover:scale-105"
           >
             <div class="h-48 bg-blue-600"></div>
             <div class="p-6">
-              
-              <h3 class="text-xl font-bold mb-2">{{ categoryName }}</h3> 
-              
+              <h3 class="text-xl font-bold mb-2">{{ categoryName }}</h3>
               <p class="text-blue-200 mb-4">
                   Découvrez l'équipement, l'entraînement et les conseils pour le {{ categoryName }}.
               </p>
-              
               <RouterLink
-                :to="`/products/category/${categoryName}`" 
+                :to="`/products/category/${categoryName}`"
                 class="text-yellow-400 font-semibold hover:text-yellow-300"
               >
                 Découvrir →
@@ -39,7 +57,8 @@
             </div>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
   
       <!-- Featured Products -->
       <section class="py-16 bg-blue-800 px-4">
@@ -136,7 +155,16 @@
     name: "Home",
     data() {
       return {
-        categories: null
+        categories: null,
+        currentIndex: 0,
+        itemsPerPage: 3,
+      }
+    },
+    computed: {
+      visibleCategories() {
+        const start = this.currentIndex;
+        const end = this.currentIndex + this.itemsPerPage;
+        return this.categories.slice(start, end);
       }
     },
     created() {
@@ -150,6 +178,16 @@
           console.log(this.categories);
         } catch (error) {
           console.error('Error fetching categories ', error);
+        }
+      },
+      nextSlide() {
+        if (this.currentIndex + this.itemsPerPage < this.categories.length) {
+          this.currentIndex += 1;
+        }
+      },
+      prevSlide() {
+        if (this.currentIndex > 0) {
+          this.currentIndex -= 1;
         }
       }
     }
