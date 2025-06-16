@@ -377,18 +377,17 @@
   
       <section class="max-w-7xl mx-auto px-4 py-8 mb-8">
         <h2 class="text-2xl font-bold mb-6">Produits similaires</h2>
-        
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div 
-            v-for="sim in simrecoms" 
-            :key="sim._id"
-            class="bg-blue-800 rounded-lg overflow-hidden shadow-lg transition-transform duration-300 hover:shadow-xl hover:scale-105"
-          >
-            <img src="" alt="">
-            <div class="p-4">
-              <h3 class="font-bold text-lg mb-1">{{ sim.name }}</h3>
+        <div
+        v-for="sim in simrecoms"
+        :key="sim._id"
+        class="bg-blue-800 rounded-lg overflow-hidden shadow-lg transition-transform duration-300 hover:shadow-xl hover:scale-105"
+        >
+          <img :src="sim.image_url" alt="" class="w-full h-48 object-cover">
+          <div class="p-4">
+            <h3 class="font-bold text-lg mb-1">{{ sim.name }}</h3>
               <div class="flex text-yellow-400 mb-2">★★★★☆</div>
-              <div class="flex justify-between items-center">
+                <div class="flex justify-between items-center">
                 <p class="text-yellow-400 font-bold">{{ sim.price.toFixed(2) }} €</p>
                 <RouterLink :to="`/product/${sim._id}`" class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-1 px-3 rounded-lg transition duration-300">
                   Ajouter
@@ -726,16 +725,6 @@
 
         this.simrecoms = response.data;
         console.log('Similiar products ', this.simrecoms);
-      } catch (error) {
-        console.error('Error fetching products ', error);
-      }
-    },
-    async getProductById(productId) {
-      try {
-        const response = await axios.get(`http://localhost:8080/api/products/${productId}`);
-
-        this.prods = response.data.imageUrl;
-        console.log('Produit recup', this.prods);
       } catch (error) {
         console.error('Error fetching products ', error);
       }
