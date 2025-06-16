@@ -24,7 +24,7 @@ class Product(BaseModel):
     description: Optional[str] = None
     stock_quantity: int
     price: float
-    image_Url: Optional[HttpUrl] = None
+    image_url: Optional[str] = None
     
     class Config:
         validate_by_name = True

@@ -375,64 +375,24 @@
         </div>
       </section>
   
-      <!-- Related Products Section -->
       <section class="max-w-7xl mx-auto px-4 py-8 mb-8">
         <h2 class="text-2xl font-bold mb-6">Produits similaires</h2>
         
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <!-- Related Product 1 -->
-          <div class="bg-blue-800 rounded-lg overflow-hidden shadow-lg transition-transform duration-300 hover:shadow-xl hover:scale-105">
-            <div class="aspect-square bg-blue-700"></div>
+          <div 
+            v-for="sim in simrecoms" 
+            :key="sim._id"
+            class="bg-blue-800 rounded-lg overflow-hidden shadow-lg transition-transform duration-300 hover:shadow-xl hover:scale-105"
+          >
+            <img src="" alt="">
             <div class="p-4">
-              <h3 class="font-bold text-lg mb-1">Ballon d'entraînement</h3>
+              <h3 class="font-bold text-lg mb-1">{{ sim.name }}</h3>
               <div class="flex text-yellow-400 mb-2">★★★★☆</div>
               <div class="flex justify-between items-center">
-                <p class="text-yellow-400 font-bold">49,99 €</p>
-                <button class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-1 px-3 rounded-lg transition duration-300">
+                <p class="text-yellow-400 font-bold">{{ sim.price.toFixed(2) }} €</p>
+                <RouterLink :to="`/product/${sim._id}`" class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-1 px-3 rounded-lg transition duration-300">
                   Ajouter
-                </button>
-              </div>
-            </div>
-          </div>
-          <!-- Related Product 2 -->
-          <div class="bg-blue-800 rounded-lg overflow-hidden shadow-lg transition-transform duration-300 hover:shadow-xl hover:scale-105">
-            <div class="aspect-square bg-blue-700"></div>
-            <div class="p-4">
-              <h3 class="font-bold text-lg mb-1">Pompe à ballon</h3>
-              <div class="flex text-yellow-400 mb-2">★★★★★</div>
-              <div class="flex justify-between items-center">
-                <p class="text-yellow-400 font-bold">15,99 €</p>
-                <button class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-1 px-3 rounded-lg transition duration-300">
-                  Ajouter
-                </button>
-              </div>
-            </div>
-          </div>
-          <!-- Related Product 3 -->
-          <div class="bg-blue-800 rounded-lg overflow-hidden shadow-lg transition-transform duration-300 hover:shadow-xl hover:scale-105">
-            <div class="aspect-square bg-blue-700"></div>
-            <div class="p-4">
-              <h3 class="font-bold text-lg mb-1">Gants de gardien Pro</h3>
-              <div class="flex text-yellow-400 mb-2">★★★★★</div>
-              <div class="flex justify-between items-center">
-                <p class="text-yellow-400 font-bold">69,99 €</p>
-                <button class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-1 px-3 rounded-lg transition duration-300">
-                  Ajouter
-                </button>
-              </div>
-            </div>
-          </div>
-          <!-- Related Product 4 -->
-          <div class="bg-blue-800 rounded-lg overflow-hidden shadow-lg transition-transform duration-300 hover:shadow-xl hover:scale-105">
-            <div class="aspect-square bg-blue-700"></div>
-            <div class="p-4">
-              <h3 class="font-bold text-lg mb-1">But d'entraînement</h3>
-              <div class="flex text-yellow-400 mb-2">★★★★☆</div>
-              <div class="flex justify-between items-center">
-                <p class="text-yellow-400 font-bold">129,99 €</p>
-                <button class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-1 px-3 rounded-lg transition duration-300">
-                  Ajouter
-                </button>
+                </RouterLink>
               </div>
             </div>
           </div>
@@ -488,12 +448,16 @@
         averageRating: 0,
         history: {},
         products: [],
+        simrecoms: null,
+        image: null,
+        prods: null
       };
     },
     created() {
       this.getProduct();
       this.fetchProductsComments();
       this.getHistory();
+      this.getSimiliarityRecommendations();
     },
     mounted() {
       this.getAllScores();
@@ -748,6 +712,32 @@
       } catch (error) {
         console.error('Error adding score ', error);
         alert('Erreur lors de l\'enregistrement de votre note');
+      }
+    },
+    async getSimiliarityRecommendations() {
+      const productId = this.$route.params.id;
+
+      try {
+        const product = await axios.get(`http://localhost:8080/api/products/${productId}`);
+
+        const productName = product.data.name;
+
+        const response = await axios.get(`http://localhost:8000/recommend/${productName}`);
+
+        this.simrecoms = response.data;
+        console.log('Similiar products ', this.simrecoms);
+      } catch (error) {
+        console.error('Error fetching products ', error);
+      }
+    },
+    async getProductById(productId) {
+      try {
+        const response = await axios.get(`http://localhost:8080/api/products/${productId}`);
+
+        this.prods = response.data.imageUrl;
+        console.log('Produit recup', this.prods);
+      } catch (error) {
+        console.error('Error fetching products ', error);
       }
     }
     }
