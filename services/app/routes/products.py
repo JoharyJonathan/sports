@@ -25,7 +25,7 @@ async def export_products_csv():
         products.append(Product(**product).dict(by_alias=True))
 
     buffer = io.StringIO()
-    writer = csv.DictWriter(buffer, fieldnames=["_id", "name", "category", "description", "stock_quantity", "price", "image_Url"])
+    writer = csv.DictWriter(buffer, fieldnames=["_id", "name", "category", "description", "stock_quantity", "price", "image_url"])
     writer.writeheader()
     for product in products:
         writer.writerow(product)
@@ -47,7 +47,7 @@ async def export_products_to_local_csv():
 
     # Écriture dans le fichier CSV
     with open(EXPORT_PATH, mode="w", newline="", encoding="utf-8") as file:
-        writer = csv.DictWriter(file, fieldnames=["_id", "name", "category", "description", "stock_quantity", "price", "image_Url"])
+        writer = csv.DictWriter(file, fieldnames=["_id", "name", "category", "description", "stock_quantity", "price", "image_url"])
         writer.writeheader()
         for product in products:
             writer.writerow(product)

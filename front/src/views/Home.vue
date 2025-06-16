@@ -65,37 +65,23 @@
         <div class="max-w-7xl mx-auto">
           <h2 class="text-3xl font-bold text-center mb-12">PRODUITS À LA UNE</h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div class="bg-blue-700 rounded-lg p-4 shadow-md transform transition duration-300 hover:shadow-xl">
-              <div class="h-40 bg-blue-600 rounded mb-4"></div>
-              <h3 class="font-bold mb-2">Ballon de football Pro</h3>
-              <p class="text-yellow-400 font-bold mb-2">89,99 €</p>
-              <button class="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 rounded">
+            <div 
+              v-for="prod in popularProd" 
+              :key="prod._id" 
+              class="bg-blue-700 rounded-lg p-4 shadow-md transform transition duration-300 hover:shadow-xl"
+            >
+              <div class="w-full h-48 overflow-hidden mb-4"> <img 
+                  :src="prod.image_url" 
+                  :alt="prod.name" 
+                  class="w-full h-full object-cover rounded-md" 
+                />
+              </div>
+              
+              <h3 class="font-bold mb-2 text-lg">{{ prod.name }}</h3>
+              <p class="text-yellow-400 font-bold mb-2 text-xl">{{ prod.price.toFixed(2) }} €</p>
+              <RouterLink :to="`/product/${prod._id}`" class="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 rounded-lg px-2">
                 Ajouter au panier
-              </button>
-            </div>
-            <div class="bg-blue-700 rounded-lg p-4 shadow-md transform transition duration-300 hover:shadow-xl">
-              <div class="h-40 bg-blue-600 rounded mb-4"></div>
-              <h3 class="font-bold mb-2">Maillot équipe nationale</h3>
-              <p class="text-yellow-400 font-bold mb-2">120,00 €</p>
-              <button class="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 rounded">
-                Ajouter au panier
-              </button>
-            </div>
-            <div class="bg-blue-700 rounded-lg p-4 shadow-md transform transition duration-300 hover:shadow-xl">
-              <div class="h-40 bg-blue-600 rounded mb-4"></div>
-              <h3 class="font-bold mb-2">Chaussures running</h3>
-              <p class="text-yellow-400 font-bold mb-2">149,99 €</p>
-              <button class="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 rounded">
-                Ajouter au panier
-              </button>
-            </div>
-            <div class="bg-blue-700 rounded-lg p-4 shadow-md transform transition duration-300 hover:shadow-xl">
-              <div class="h-40 bg-blue-600 rounded mb-4"></div>
-              <h3 class="font-bold mb-2">Raquette de tennis Pro</h3>
-              <p class="text-yellow-400 font-bold mb-2">199,99 €</p>
-              <button class="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 rounded">
-                Ajouter au panier
-              </button>
+              </RouterLink>
             </div>
           </div>
         </div>
@@ -158,6 +144,7 @@
         categories: null,
         currentIndex: 0,
         itemsPerPage: 3,
+        popularProd: null,
       }
     },
     computed: {
@@ -169,6 +156,7 @@
     },
     created() {
       this.getCategories();
+      this.getPopularProducts();
     },
     methods: {
       async getCategories() {
@@ -188,6 +176,16 @@
       prevSlide() {
         if (this.currentIndex > 0) {
           this.currentIndex -= 1;
+        }
+      },
+      async getPopularProducts() {
+        try {
+          const response = await axios.get("http://localhost:8000/recommend/fallback?method=popular&top_n=4");
+
+          this.popularProd = response.data;
+          console.log(this.popularProd);
+        } catch (error) {
+          console.error('Error fetching popular products !', error);
         }
       }
     }
