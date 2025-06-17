@@ -307,7 +307,6 @@
         try {
           const response = await axios.get(`http://localhost:8080/api/favorites/user/${userId}`);
 
-
           const favorites = response.data;
 
           const products = favorites.map(fav => fav.product);

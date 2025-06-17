@@ -2,6 +2,7 @@ from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
 from ..db import db
 from ..models import Product
+from bson import ObjectId
 import csv
 import io
 import os
@@ -16,6 +17,15 @@ async def get_all_products():
     async for product in products_cursor:
         products.append(Product(**product))
     return products
+
+@router.get("/product/{product_id}")
+async def get_product_by_id(product_id: str):
+    product = await db["products"].find_one({"_id": ObjectId(product_id)})
+    if product:
+        product["_id"] = str(product["_id"])
+        return product
+    else:
+        return {"message": "Produit introuvable"}
 
 @router.get("/products/export/csv")
 async def export_products_csv():
