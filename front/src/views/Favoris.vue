@@ -297,9 +297,39 @@
           console.log('Tous les favoris ont été supprimés');
         }
       },
-      exportFavorites() {
-        // Logique pour exporter la liste
-        console.log('Export de la liste des favoris...');
+      async exportFavorites() {
+        try {
+          console.log('Export de la liste des favoris...', this.favoriteProducts);
+
+          let ids = '?'
+
+          for(let i = 0; i < this.favoriteProducts.length; i++) {
+            console.log(this.favoriteProducts[i].idAsString);
+            ids = ids + 'product_ids=' + this.favoriteProducts[i].idAsString + '&';
+          }
+
+          if (ids.endsWith("&")) {
+            ids = ids.slice(0, -1);
+          }
+
+          console.log(ids);
+
+          const response = await axios.get(`http://localhost:8000/products/by_ids${ids}`, {
+            responseType: 'blob'
+          });
+
+          const blob = new Blob([response.data], { type: 'text/csv' });
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', 'favorites.csv');
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(url);
+        } catch (error) {
+          console.error('Error fetching products ', error);
+        }
       },
       async fetchFavorites() {
         const userId = this.$route.params.id;

@@ -39,15 +39,3 @@ class Product(BaseModel):
                 "image_url": "https://example.com/image.png"
             }
         }
-        
-class Favorite(BaseModel):
-    id: Optional[PyObjectId] = Field(alias="_id")
-    user: str
-    product: str
-    
-    class Config:
-        validate_by_name = True
-        json_encoders = {ObjectId: str}
-        json_schema_extra = {
-            
-        }

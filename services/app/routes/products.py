@@ -1,8 +1,9 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Query
 from fastapi.responses import StreamingResponse
 from ..db import db
 from ..models import Product
 from bson import ObjectId
+from typing import List
 import csv
 import io
 import os
@@ -17,6 +18,28 @@ async def get_all_products():
     async for product in products_cursor:
         products.append(Product(**product))
     return products
+
+@router.get("/products/by_ids")
+async def get_products_by_ids(product_ids: List[str] = Query(..., description="Liste des IDs des produits")):
+    try:
+        object_ids = [ObjectId(pid) for pid in product_ids]
+    except Exception:
+        return {"error": "Un ou plusieurs IDs sont invalides"}
+    
+    cursor = db["products"].find({"_id": {"$in": object_ids}})
+    products = []
+    async for product in cursor:
+        product["_id"] = str(product["_id"])
+        products.append(Product(**product).dict(by_alias=True))
+
+    buffer = io.StringIO()
+    writer = csv.DictWriter(buffer, fieldnames=["_id", "name", "category", "description", "stock_quantity", "price", "image_url"])
+    writer.writeheader()
+    for product in products:
+        writer.writerow(product)
+
+    buffer.seek(0)
+    return StreamingResponse(buffer, media_type="text/csv", headers={"Content-Disposition": "attachment; filename=favorites.csv"})
 
 @router.get("/product/{product_id}")
 async def get_product_by_id(product_id: str):
