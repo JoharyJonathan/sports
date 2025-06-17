@@ -34,11 +34,16 @@
               </template>
               
               <!-- Thumbnail Gallery -->
-              <div class="grid grid-cols-4 gap-2">
-                <div class="bg-blue-600 aspect-square rounded cursor-pointer border-2 border-yellow-400"></div>
-                <div class="bg-blue-600 aspect-square rounded cursor-pointer hover:border-2 hover:border-yellow-400"></div>
-                <div class="bg-blue-600 aspect-square rounded cursor-pointer hover:border-2 hover:border-yellow-400"></div>
-                <div class="bg-blue-600 aspect-square rounded cursor-pointer hover:border-2 hover:border-yellow-400"></div>
+              <div class="grid grid-cols-4 gap-2"> 
+                <div v-for="ran in ranrecoms" :key="ran._id" class="relative pb-[100%]"> 
+                  <RouterLink :to="`/product/${ran._id}`" class="absolute inset-0 block">
+                    <img 
+                      :src="ran.image_url" 
+                      :alt="ran.name || 'Produit similaire'" 
+                      class="w-full h-full object-cover rounded-md cursor-pointer"
+                    >
+                  </RouterLink>
+                </div>
               </div>
             </div>
   
@@ -348,7 +353,6 @@
                   <div class="text-blue-200 text-sm">Il y a 2 jours</div>
                 </div>
                 <div class="text-yellow-400 mb-2">★★★★★</div>
-                <h4 class="font-semibold mb-2">Excellent ballon pour les matchs officiels</h4>
                 <p class="text-blue-200 mb-4">
                   {{ com.content }}
                 </p>
@@ -449,7 +453,8 @@
         products: [],
         simrecoms: null,
         image: null,
-        prods: null
+        prods: null,
+        ranrecoms: null,
       };
     },
     created() {
@@ -457,6 +462,7 @@
       this.fetchProductsComments();
       this.getHistory();
       this.getSimiliarityRecommendations();
+      this.getRandomProducts();
     },
     mounted() {
       this.getAllScores();
@@ -727,6 +733,16 @@
         console.log('Similiar products ', this.simrecoms);
       } catch (error) {
         console.error('Error fetching products ', error);
+      }
+    },
+    async getRandomProducts() {
+      try {
+        const response = await axios.get('http://localhost:8000/recommend/fallback?method=random&top_n=4');
+
+        this.ranrecoms = response.data;
+        console.log('Random products', this.ranrecoms);
+      } catch (error) {
+        console.error('Error fetching random products ', error);
       }
     }
     }
