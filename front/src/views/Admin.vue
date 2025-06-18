@@ -65,7 +65,9 @@
               class="w-full bg-blue-800 border border-blue-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
             >
               <option value="">Toutes les catégories</option>
-              <option v-for="cat in categoryOptions" :key="cat" :value="cat">{{ cat }}</option>
+              <option v-for="(sport, index) in categoryOptions" :key="index" :value="sport">
+                {{ sport }}
+              </option>
             </select>
           </div>
           <div>
@@ -243,7 +245,7 @@
                   class="w-full bg-blue-800 border border-blue-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
                 >
                   <option value="">Sélectionner une catégorie</option>
-                  <option v-for="cat in categoryOptions" :key="cat" :value="cat">{{ cat }}</option>
+                  <option v-for="(sport, index) in categoryOptions" :key="index" :value="sport">{{ sport }}</option>
                 </select>
               </div>
 
@@ -405,10 +407,7 @@ export default {
       users: [],
 
       // Category Options (sports + roles)
-      categoryOptions: [
-        'BasketBall', 'FootBall', 'VolleyBall', 'Running', 'Tennis',
-        'admin', 'user', 'moderator', 'editor', 'viewer'
-      ],
+      categoryOptions: [],
 
       // Filters and Search
       searchTerm: '',
@@ -446,6 +445,7 @@ export default {
 
   created() {
     this.getUsers();
+    this.getCategories();
   },
 
   computed: {
@@ -716,6 +716,17 @@ export default {
       };
       return labels[status] || status;
     },
+
+    async getCategories() {
+      try {
+        const response = await axios.get('http://localhost:8000/categories');
+
+        this.categoryOptions = response.data.categories;
+        console.log(this.categoryOptions);
+      } catch (error) {
+        console.error('Error fetching categories ', error);
+      }
+    }
   }
 };
 </script>
