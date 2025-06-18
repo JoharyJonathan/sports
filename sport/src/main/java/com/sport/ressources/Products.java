@@ -14,6 +14,8 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import dev.morphia.query.filters.Filters;
+
 @Path("/products")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -189,6 +191,49 @@ public class Products {
                                             .filter("category", category)
                                             .iterator()
                                             .toList();
+
+            if (products.isEmpty()) {
+                return Response.status(Response.Status.NO_CONTENT).build();
+            }
+
+            String json = mapper.writeValueAsString(products);
+
+            redisService.set(cacheKey, json, 3600);
+            return Response.ok(products).build();
+
+        } catch (Exception e) {
+            return Response.serverError().entity(e.getMessage()).build();
+        }
+    }
+
+    @GET
+    @Path("/search")
+    public Response searchProducts(@QueryParam("q") String query) {
+        try {
+            if (query == null || query.trim().isEmpty()) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                            .entity("Search query is required")
+                            .build();
+            }
+
+            String cacheKey = "products:search:" + query.toLowerCase();
+            String cached = redisService.get(cacheKey);
+
+            if (cached != null) {
+                return Response.ok(cached).build();
+            }
+
+            // Recherche insensible à la casse sur name et description
+            List<Product> products = mongoDB.getDatastore()
+                    .find(Product.class)
+                    .filter(
+                            Filters.or(
+                                    Filters.regex("name").pattern(query).caseInsensitive(),
+                                    Filters.regex("description").pattern(query).caseInsensitive()
+                            )
+                    )
+                    .iterator()
+                    .toList();
 
             if (products.isEmpty()) {
                 return Response.status(Response.Status.NO_CONTENT).build();
