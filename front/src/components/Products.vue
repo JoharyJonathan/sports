@@ -113,11 +113,12 @@
       </div>
 
       <!-- Section des produits -->
-      <div class="mb-6">
+      <div class="mb-6 flex justify-between">
         <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
           <div class="w-2 h-8 bg-gradient-to-b from-green-500 to-emerald-500 rounded-full mr-3"></div>
           Catalogue des Produits ({{ products.length }})
         </h2>
+        <button @click="exportProducts" class="text-white px-4 py-1 mr-3 bg-blue-400 rounded-2xl hover:bg-blue-500">export csv</button>
       </div>
 
       <!-- Grille des produits avec animations -->
@@ -276,6 +277,27 @@
           idAsString: '',
         }
       },
+      async exportProducts() {
+        try {
+          const response = await axios.get('http://localhost:8000/products/export/csv', {
+            responseType: 'blob'
+          });
+
+          const blob = new Blob([response.data], { type: 'text/csv' });
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', 'products.csv');
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(url);
+
+          console.log(response.data);
+        } catch (error) {
+          console.error('Error exporting products ', error);
+        }
+      }
     },
   }
 </script>
