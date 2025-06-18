@@ -28,20 +28,10 @@
           <p class="text-4xl font-bold">{{ users.length }}</p>
           <p class="text-blue-300 text-sm mt-1">Tous profils confondus</p>
         </div>
-        <div class="bg-blue-700 rounded-xl p-5 shadow-lg transform hover:scale-105 transition-transform duration-300">
-          <h3 class="text-xl font-semibold mb-2 text-blue-200">BasketBall</h3>
-          <p class="text-4xl font-bold">{{ getUsersByCategory('BasketBall').length }}</p>
-          <p class="text-blue-300 text-sm mt-1">Joueurs de basketball</p>
-        </div>
-        <div class="bg-blue-700 rounded-xl p-5 shadow-lg transform hover:scale-105 transition-transform duration-300">
-          <h3 class="text-xl font-semibold mb-2 text-blue-200">FootBall</h3>
-          <p class="text-4xl font-bold">{{ getUsersByCategory('FootBall').length }}</p>
-          <p class="text-blue-300 text-sm mt-1">Joueurs de football</p>
-        </div>
-        <div class="bg-blue-700 rounded-xl p-5 shadow-lg transform hover:scale-105 transition-transform duration-300">
-          <h3 class="text-xl font-semibold mb-2 text-blue-200">VolleyBall</h3>
-          <p class="text-4xl font-bold">{{ getUsersByCategory('VolleyBall').length }}</p>
-          <p class="text-blue-300 text-sm mt-1">Joueurs de volleyball</p>
+        <div class="bg-blue-700 rounded-xl p-5 shadow-lg transform hover:scale-105 transition-transform duration-300" v-for="(sport, index) in categoryOptions" :key="index">
+          <h3 class="text-xl font-semibold mb-2 text-blue-200">{{ sport }}</h3>
+          <p class="text-4xl font-bold">{{ getUsersByCategory(sport).length }}</p>
+          <p class="text-blue-300 text-sm mt-1">Joueurs de {{ sport }}</p>
         </div>
       </div>
 
