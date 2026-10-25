@@ -3,7 +3,7 @@
 *.lst
 
 # Build output
-/target/
+sport/target/
 /bin/
 
 # Env
